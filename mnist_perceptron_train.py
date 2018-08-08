@@ -76,6 +76,16 @@ def inference(x):
     return y
 
 
+def loss(onehot_labels, logits):
+    # 損失関数はクロスエントロピーとする
+    return tf.losses.softmax_cross_entropy(onehot_labels=onehot_labels, logits=logits)
+
+
+def training(loss_value):
+    # 勾配降下アルゴリズムを用いてクロスエントロピーを最小化する
+    return tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(loss_value)
+
+
 def train(trains, tests):
     # データとラベルに分ける
     train_x, train_y = trains
@@ -90,10 +100,10 @@ def train(trains, tests):
         labels = tf.placeholder(tf.int64, [None])
         y_ = tf.one_hot(labels, depth=CLASS_NUM, dtype=tf.float32)
 
-        # 損失関数をクロスエントロピーとする
-        loss = tf.losses.softmax_cross_entropy(onehot_labels=y_, logits=y)
-        # 学習係数を指定して勾配降下アルゴリズムを用いてクロスエントロピーを最小化する
-        train_step = tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(loss)
+        # 損失関数
+        loss_value = loss(y_, y)
+        # 学習
+        train_step = training(loss_value)
 
         # 予測値と正解値を比較してbool値にする
         prediction = tf.argmax(tf.nn.softmax(y), 1)
@@ -121,11 +131,11 @@ def train(trains, tests):
                 # 確率的勾配降下法によりクロスエントロピーを最小化するような重みを更新する
                 sess.run(train_step, feed_dict={x: batch_x, labels: batch_y})
             # 1epoch毎に学習データに対して精度を出す
-            train_accuracy, train_loss = sess.run([accuracy, loss], feed_dict={x: train_x, labels: train_y})
+            train_accuracy, train_loss = sess.run([accuracy, loss_value], feed_dict={x: train_x, labels: train_y})
             print(f'[epoch {epoch+1:02d}] acc={train_accuracy:12.10f} loss={train_loss:12.10f}')
 
         # 学習が終わったら評価データに対して精度を出す
-        test_accuracy, test_loss, prediction_y = sess.run([accuracy, loss, prediction], feed_dict={x: test_x, labels: test_y})
+        test_accuracy, test_loss, prediction_y = sess.run([accuracy, loss_value, prediction], feed_dict={x: test_x, labels: test_y})
         print('\n- test accuracy')
         print(f'acc={test_accuracy:12.10f} loss={test_loss:12.10f}')
 
