@@ -27,7 +27,7 @@ TRAIN_LABELS_PATH = DATA_PATH / 'labels/train.csv'
 TEST_IMAGES_PATH = DATA_PATH / 'images/test/'
 TEST_LABELS_PATH = DATA_PATH / 'labels/test.csv'
 
-CHECKPOINT = './checkpoint/perceptron.ckpt'
+CHECKPOINT = './checkpoint/mnist_perceptron.ckpt'
 
 
 def image2array(image_path):
