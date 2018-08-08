@@ -1,0 +1,6 @@
+.DS_Store
+.idea
+__pycache__
+checkpoint/*
+MNIST_data/processed/*
+!.gitkeep
