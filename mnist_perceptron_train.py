@@ -82,7 +82,7 @@ def loss(onehot_labels, logits):
 
 
 def training(loss_value):
-    # 勾配降下アルゴリズムを用いてクロスエントロピーを最小化する
+    # 勾配降下アルゴリズム(最急降下法)を用いてクロスエントロピーを最小化する
     return tf.train.GradientDescentOptimizer(LEARNING_RATE).minimize(loss_value)
 
 
