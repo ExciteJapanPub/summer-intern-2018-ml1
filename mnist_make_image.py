@@ -34,17 +34,17 @@ def load(x_path, y_path):
 def make_images(path, images, labels):
     path.mkdir(parents=True, exist_ok=True)
     for (i, image), label in zip(enumerate(images), labels):
-        filepath = path / '{}_{}.jpg'.format(label, i)
+        filepath = path / f'{label}_{i}.jpg'
         Image.fromarray(image.reshape(28, 28)).save(filepath)
 
 
 def make_labellist(path, kind, labels):
     path.mkdir(parents=True, exist_ok=True)
     filepaths = [
-        '{}_{}.jpg'.format(label, i) for i, label in enumerate(labels)
+        f'{label}_{i}.jpg' for i, label in enumerate(labels)
     ]
     df = pd.DataFrame({'name': filepaths, 'target': labels.tolist()})
-    df.to_csv(path / '{}.csv'.format(kind), index=False, header=False)
+    df.to_csv(path / f'{kind}.csv', index=False, header=False)
 
 
 def main():
