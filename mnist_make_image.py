@@ -45,6 +45,9 @@ def make_labellist(path, kind, labels):
     ]
     df = pd.DataFrame({'name': filepaths, 'target': labels.tolist()})
     df.to_csv(path / f'{kind}.csv', index=False, header=False)
+    mini = int(len(filepaths) * 0.1)
+    df = pd.DataFrame({'name': filepaths[:mini], 'target': labels.tolist()[:mini]})
+    df.to_csv(path / f'{kind}_mini.csv', index=False, header=False)
 
 
 def main():

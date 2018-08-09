@@ -23,11 +23,14 @@ LEARNING_RATE = 0.5
 
 DATA_PATH = pathlib.Path('./MNIST_data/processed/')
 TRAIN_IMAGES_PATH = DATA_PATH / 'images/train/'
-TRAIN_LABELS_PATH = DATA_PATH / 'labels/train.csv'
+# TRAIN_LABELS_PATH = DATA_PATH / 'labels/train.csv'
+TRAIN_LABELS_PATH = DATA_PATH / 'labels/train_mini.csv'
 TEST_IMAGES_PATH = DATA_PATH / 'images/test/'
-TEST_LABELS_PATH = DATA_PATH / 'labels/test.csv'
+# TEST_LABELS_PATH = DATA_PATH / 'labels/test.csv'
+TEST_LABELS_PATH = DATA_PATH / 'labels/test_mini.csv'
 
-CHECKPOINT = './checkpoint/mnist_perceptron.ckpt'
+# CHECKPOINT = './checkpoint/mnist_perceptron.ckpt'
+CHECKPOINT = './checkpoint/mnist_mini_perceptron.ckpt'
 
 
 def image2array(image_path):
