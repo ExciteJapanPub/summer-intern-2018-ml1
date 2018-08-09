@@ -74,7 +74,7 @@ def inference(x, keep_prob):
         initial = tf.truncated_normal(shape, stddev=0.1)
         return tf.Variable(initial)
 
-    # バイアスを標準偏差0.1の正規分布で初期化する
+    # バイアスを0.1の定数で初期化する
     def bias_variable(shape):
         initial = tf.constant(0.1, shape=shape)
         return tf.Variable(initial)
