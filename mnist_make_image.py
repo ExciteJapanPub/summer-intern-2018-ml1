@@ -12,8 +12,7 @@ import pandas as pd
 from PIL import Image
 
 
-def load(paths):
-    x_path, y_path = paths
+def load(x_path, y_path):
     with gzip.open(x_path) as fx, gzip.open(y_path) as fy:
         fx.read(4)
         fy.read(4)
@@ -56,11 +55,10 @@ def main():
 
         data_path = pathlib.Path() / 'MNIST_data'
 
-        paths = [
-            data_path / 'raw' / f'{_kind}-images-idx3-ubyte.gz',
-            data_path / 'raw' / f'{_kind}-labels-idx1-ubyte.gz',
-        ]
-        images, labels = load(paths)
+        images_path = data_path / 'raw' / f'{_kind}-images-idx3-ubyte.gz'
+        labels_path = data_path / 'raw' / f'{_kind}-labels-idx1-ubyte.gz'
+
+        images, labels = load(images_path, labels_path)
 
         processed_path = data_path / 'processed'
         make_images(processed_path / 'images' / kind, images, labels)
