@@ -53,8 +53,6 @@ def adjust_contrast(src):
     lut_hc = np.arange(256, dtype='uint8')
     lut_lc = np.arange(256, dtype='uint8')
 
-    lut_list = []
-
     # ハイコントラストLUT作成
     for i in range(0, min_table):
         lut_hc[i] = 0
@@ -67,14 +65,11 @@ def adjust_contrast(src):
     for i in range(256):
         lut_lc[i] = min_table + i * diff_table / 255
 
-    lut_list.append(lut_hc)
-    lut_list.append(lut_lc)
-
-    distorted = []
-
     # LUT変換
-    for LUT in lut_list:
-        distorted.append(cv2.LUT(src, LUT))
+    distorted = [
+        cv2.LUT(src, lut_hc),
+        cv2.LUT(src, lut_lc),
+    ]
 
     return distorted
 
@@ -82,21 +77,13 @@ def adjust_contrast(src):
 # ガンマ補正
 def apply_gamma_correction(src):
     # ルックアップテーブルの生成
-    gamma1 = 0.75
-    gamma2 = 1.5
-
-    lut_g1 = np.arange(256, dtype='uint8')
-    lut_g2 = np.arange(256, dtype='uint8')
-
-    lut_list = []
+    gamma_list = [0.75, 1.5]
 
     # ガンマ補正LUT作成
-    for i in range(256):
-        lut_g1[i] = 255 * pow(float(i) / 255, 1.0 / gamma1)
-        lut_g2[i] = 255 * pow(float(i) / 255, 1.0 / gamma2)
-
-    lut_list.append(lut_g1)
-    lut_list.append(lut_g2)
+    lut_list = []
+    for gamma in gamma_list:
+        lut_g = np.asarray([255 * pow(float(i) / 255, 1.0 / gamma) for i in range(256)])
+        lut_list.append(lut_g)
 
     distorted = []
 
