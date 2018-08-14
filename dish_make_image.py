@@ -1,4 +1,5 @@
 import pathlib
+import shutil
 import random
 
 import cv2
@@ -157,13 +158,14 @@ def distort(src):
     return result
 
 
-def load(x_path, y_path):
+def load(a_path, i_path, l_path):
+    shutil.unpack_archive(str(a_path), a_path.parent)
     images = []
     labels = []
-    with open(y_path) as f:
+    with open(l_path) as f:
         for line in f:
             filename, label = line.rstrip().split(',')
-            images.append(x_path / filename)
+            images.append(i_path / filename)
             labels.append(int(label))
     return images, labels
 
@@ -199,10 +201,11 @@ def main():
 
         data_path = pathlib.Path() / 'DISH_data'
 
+        archive_path = data_path / 'raw' / 'images' / f'{kind}.tar.gz'
         images_path = data_path / 'raw' / 'images' / kind
         labels_path = data_path / 'raw' / 'labels' / f'{kind}.csv'
 
-        images, labels = load(images_path, labels_path)
+        images, labels = load(archive_path, images_path, labels_path)
 
         processed_path = data_path / 'processed'
         images, labels = make_images(processed_path / 'images' / kind, images, labels)
