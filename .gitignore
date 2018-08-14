@@ -3,4 +3,5 @@
 __pycache__
 checkpoint/*
 MNIST_data/processed/*
+DISH_data/processed/*
 !.gitkeep
