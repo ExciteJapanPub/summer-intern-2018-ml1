@@ -3,6 +3,7 @@ import numpy as np
 import tensorflow as tf
 import bff_train as train
 
+N = 5
 
 class User:
     def __init__(self, user_id):
@@ -84,12 +85,13 @@ def update_feature(users, user_id, label):
 
 # ---------
 
-def calc_BFF_rank(usr_id, list_usr):
+
+def calc_BFF_rank(usr_id, users):
    user = User()
    sim_arr = []
    my_vector = user.get_feature_food(usr_id)
    i = 0
-   for user in range(0, len(list_usr)):
+   for user in range(0, len(users)):
        your_vector = user.get_feature_food(usr_id)
        sim_arr[i] = np.inner(your_vector, my_vector)
        i += 1
@@ -97,19 +99,56 @@ def calc_BFF_rank(usr_id, list_usr):
    return sim_arr
 
 
-def show_BFF_rank(usr_id, list_usr):
-   arr = calc_BFF_rank(usr_id, list_usr)
+def show_BFF_rank(usr_id, users):
+   arr = calc_BFF_rank(usr_id, users)
    temp = np.argsort(arr)
    print(temp[:5])
 
 
 
-def generate_users(path):
+def generate_users():
    users = []
+   path_list = [
+       '0_003.jpg',
+       '1_003.jpg',
+       '2_003.jpg',
+       '3_003.jpg',
+       '4_003.jpg',
+       '0_008.jpg',
+       '1_008.jpg',
+       '2_008.jpg',
+       '3_008.jpg',
+       '4_008.jpg']
+
    for i in range(0, 10):
        users[i] = User(i).user_id
-       input_pic(path, i)
-       predict()
-       update_feature()
+       path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/" + path_list[i]
+       picture = input_pic(path, i)
+       label = predict(picture)
+       update_feature(users, i, label)
 
    return users
+
+
+if __name__ == '__main__':
+
+    users = generate_users()
+
+    '''
+    print('path->')
+    path = input()
+    user_id = input()
+    '''
+
+    path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_037.jpg"
+    user_id = 0
+
+    picture = input_pic(path, user_id)
+
+    label = predict(picture)
+
+    update_feature(label)
+
+    calc_BFF_rank(user_id, users)
+
+    show_BFF_rank(user_id, users)
