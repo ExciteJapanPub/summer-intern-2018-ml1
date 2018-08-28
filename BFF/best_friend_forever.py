@@ -87,13 +87,15 @@ def update_feature(users, user_id, label):
 
 
 def calc_BFF_rank(usr_id, users):
-   user = User()
+   user = search_user_by_userid(users, usr_id)
    sim_arr = []
-   my_vector = user.get_feature_food(usr_id)
+   my_vector = user.get_feature_food()
    i = 0
-   for user in range(0, len(users)):
-       your_vector = user.get_feature_food(usr_id)
-       sim_arr[i] = np.inner(your_vector, my_vector)
+   for user in users:
+       print(i)
+       your_vector = user.get_feature_food()
+       print(my_vector, your_vector)
+       sim_arr.append(np.inner(your_vector, my_vector))
        i += 1
 
    return sim_arr
@@ -101,7 +103,7 @@ def calc_BFF_rank(usr_id, users):
 
 def show_BFF_rank(usr_id, users):
    arr = calc_BFF_rank(usr_id, users)
-   temp = np.argsort(arr)
+   temp = np.argsort(arr)[::-1]
    print(temp[:5])
 
 
@@ -110,10 +112,10 @@ def generate_users():
    users = []
    path_list = [
        '0_003.jpg',
-       '1_003.jpg',
-       '2_003.jpg',
-       '3_003.jpg',
-       '4_003.jpg',
+       '0_003.jpg',
+       '0_003.jpg',
+       '0_003.jpg',
+       '0_003.jpg',
        '0_008.jpg',
        '1_008.jpg',
        '2_008.jpg',
@@ -121,7 +123,7 @@ def generate_users():
        '4_008.jpg']
 
    for i in range(0, 10):
-       users[i] = User(i).user_id
+       users.append(User(i))
        path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/" + path_list[i]
        picture = input_pic(path, i)
        label = predict(picture)
@@ -140,14 +142,14 @@ if __name__ == '__main__':
     user_id = input()
     '''
 
-    path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_037.jpg"
+    # path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_003.jpg"
     user_id = 0
-
-    picture = input_pic(path, user_id)
-
-    label = predict(picture)
-
-    update_feature(label)
+    #
+    # picture = input_pic(path, user_id)
+    #
+    # label = predict(picture)
+    #
+    # update_feature(users, user_id, label)
 
     calc_BFF_rank(user_id, users)
 
