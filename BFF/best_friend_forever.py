@@ -2,6 +2,7 @@
 import numpy as np
 import tensorflow as tf
 import bff_train as train
+from numpy.random import *
 
 N = 5
 
@@ -24,6 +25,11 @@ class Picture:
 
 FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
 
+
+def normalize(v, axis=-1, order=2):
+    l2 = np.linalg.norm(v, ord = order, axis=axis, keepdims=True)
+    l2[l2==0] = 1
+    return v/l2
 
 def input_pic(path, user_id):
     picture = Picture()
@@ -81,6 +87,12 @@ def update_feature(users, user_id, label):
     user = search_user_by_userid(users, user_id)
     assert user is not None
     user.feature_food[label] += 1
+    # for test
+    if user_id == 0:
+        pass
+    else:
+        for i in range(0, N):
+            user.feature_food[i] += randint(5)
 
 
 # ---------
@@ -94,6 +106,8 @@ def calc_BFF_rank(usr_id, users):
    for user in users:
        print(i)
        your_vector = user.get_feature_food()
+       my_vector = normalize(my_vector)
+       your_vector = normalize(your_vector)
        print(my_vector, your_vector)
        sim_arr.append(np.inner(your_vector, my_vector))
        i += 1
@@ -142,14 +156,14 @@ if __name__ == '__main__':
     user_id = input()
     '''
 
-    # path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_003.jpg"
+    path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_003.jpg"
     user_id = 0
     #
-    # picture = input_pic(path, user_id)
+    picture = input_pic(path, user_id)
     #
-    # label = predict(picture)
+    label = predict(picture)
     #
-    # update_feature(users, user_id, label)
+    update_feature(users, user_id, label)
 
     calc_BFF_rank(user_id, users)
 
