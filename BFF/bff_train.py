@@ -31,7 +31,7 @@ TEST_IMAGES_PATH = DATA_PATH / 'images/test/'
 TEST_LABELS_PATH = DATA_PATH / 'labels/test_distortion.csv'
 
 # CHECKPOINT = './checkpoint/mnist_cnn.ckpt'
-CHECKPOINT = './checkpoint/dish_mini_cnn.ckpt'
+CHECKPOINT = '../checkpoint/dish_mini_cnn.ckpt'
 
 
 def image2array(image_path):
