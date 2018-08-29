@@ -7,6 +7,7 @@ import numpy as np
 import tensorflow as tf
 from sklearn import metrics
 from tqdm import tqdm
+import pandas as pd
 
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -15,23 +16,23 @@ IMAGE_SIZE = 28
 CHANNEL_NUM = 3
 IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * CHANNEL_NUM
 
-CLASS_NUM = 5
+CLASS_NUM = 101
 
-EPOCH_SIZE = 30
-BATCH_SIZE = 100
+EPOCH_SIZE = 1
+BATCH_SIZE = 300
 
 LEARNING_RATE = 1e-4
 
-DATA_PATH = pathlib.Path('./DISH_data/processed/')
-TRAIN_IMAGES_PATH = DATA_PATH / 'images/train/'
+DATA_PATH = pathlib.Path('./dataset')
+TRAIN_IMAGES_PATH = DATA_PATH / 'meta/train.txt'
 # TRAIN_LABELS_PATH = DATA_PATH / 'labels/train.csv'
-TRAIN_LABELS_PATH = DATA_PATH / 'labels/train_distortion.csv'
-TEST_IMAGES_PATH = DATA_PATH / 'images/test/'
+LABELS_PATH = DATA_PATH / 'meta/classes.txt'
 # TEST_LABELS_PATH = DATA_PATH / 'labels/test.csv'
-TEST_LABELS_PATH = DATA_PATH / 'labels/test_distortion.csv'
-
+TEST_IMAGES_PATH = DATA_PATH / 'meta/test.txt'
 # CHECKPOINT = './checkpoint/mnist_cnn.ckpt'
-CHECKPOINT = '../checkpoint/dish_mini_cnn.ckpt'
+CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
+
+class_df = pd.read_table(LABELS_PATH, header=None)
 
 
 def image2array(image_path):
@@ -46,17 +47,20 @@ def image2array(image_path):
     return image
 
 
-def load_images(images_path, labels_path):
+def load_images(images_path):
     images = []
     labels = []
 
-    print('\n- load', labels_path.name)
+    # print('\n- load', labels_path.name)
 
-    with labels_path.open() as f:
+    with images_path.open() as f:
         # 各行のファイル名と正解ラベルを取り出しリスト化する
         for line in tqdm(f):
-            filename, label = line.rstrip().split(',')
-            image_path = str(images_path / filename)
+            dishname, filename = line.rstrip().split('/')
+            label = class_df.at[dishname, 'lable']
+            # print("label_str = " + dishname)
+            # print("label = " + str(label))
+            image_path = str("./dataset/images/" + dishname + '/' + filename + '.jpg')
             image = image2array(image_path)
             if image is None:
                 print('not image:', image_path)
@@ -222,9 +226,13 @@ def train(trains, tests):
 
 
 if __name__ == '__main__':
+    class_df = class_df.rename(columns={0: 'class'})
+    class_df['lable'] = [i for i in range(CLASS_NUM)]
+    class_df = class_df.set_index('class')
+    print(class_df)
     # 学習データをロードする
-    train_lsit = load_images(TRAIN_IMAGES_PATH, TRAIN_LABELS_PATH)
+    train_lsit = load_images(TRAIN_IMAGES_PATH)
     # 評価データをロードする
-    test_list = load_images(TEST_IMAGES_PATH, TEST_LABELS_PATH)
+    test_list = load_images(TEST_IMAGES_PATH)
     # 学習開始
     train(train_lsit, test_list)
