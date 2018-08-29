@@ -4,16 +4,19 @@ import tensorflow as tf
 import bff_train as train
 from numpy.random import *
 
-N = 5
+N = 101
+COUNTRY_NUM = 10
+ING_NUM  = 10
+CAL_NUM = 3
 # categryのデータをpandasで読み込み
 
 class User:
     def __init__(self, user_id):
         self.feature_food = np.zeros(N)
+        self.feature_country = np.zeros(COUNTRY_NUM)
+        self.feature_ing = np.zeros(ING_NUM)
+        self.feature_calorie = np.zeros(CAL_NUM)
         self.user_id = user_id
-
-    def get_feature_food(self):
-        return self.feature_food
 
 
 class Picture:
@@ -88,6 +91,10 @@ def update_feature(users, user_id, label):
     user = search_user_by_userid(users, user_id)
     assert user is not None
     user.feature_food[label] += 1
+    #ラベル:料理名リストのインデックス
+    #対応するカテゴリーのベクトルを読み込む
+
+    user.feature_country[label] +=
     # for test
     if user_id == 0:
         pass
