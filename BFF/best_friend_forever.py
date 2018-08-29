@@ -4,6 +4,7 @@ import tensorflow as tf
 import bff_train as train
 
 N = 5
+# categryのデータをpandasで読み込み
 
 class User:
     def __init__(self, user_id):
@@ -20,10 +21,10 @@ class Picture:
         self.user_id = None
         self.file_path = None
         self.food_num = None
+        self.feature_vector = None
 
 
-FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
-
+# FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
 
 def input_pic(path, user_id):
     picture = Picture()
@@ -65,7 +66,7 @@ def predict(picture):
         print(f'prediction={label} probas={probas} image={picture.file_path}')
 
         picture.food_num = label
-
+        # feature_vectorを参照して代入
         return label
 
 
@@ -90,6 +91,7 @@ def calc_BFF_rank(usr_id, users):
    user = search_user_by_userid(users, usr_id)
    sim_arr = []
    my_vector = user.get_feature_food()
+   # get_feature_vector
    i = 0
    for user in users:
        print(i)
