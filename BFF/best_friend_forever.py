@@ -15,11 +15,7 @@ category_df = pd.read_csv(CATEGORY_PATH)
 
 from numpy.random import *
 
-N = 101
-COUNTRY_NUM = 10
-ING_NUM  = 10
-CAL_NUM = 3
-# categryのデータをpandasで読み込み
+# categoryのデータをpandasで読み込み
 
 class User:
     def __init__(self, user_id):
@@ -27,6 +23,9 @@ class User:
         self.feature_country = np.zeros(COUNTRY_NUM)
         self.feature_ing = np.zeros(ING_NUM)
         self.feature_calorie = np.zeros(CALORIE_NUM)
+        self.user_id = user_id
+
+        self.feature_calorie = np.zeros(CAL_NUM)
         self.user_id = user_id
 
         self.feature_calorie = np.zeros(CAL_NUM)
@@ -48,7 +47,6 @@ def normalize(v, axis=-1, order=2):
     l2 = np.linalg.norm(v, ord = order, axis=axis, keepdims=True)
     l2[l2==0] = 1
     return v/l2
-
 
 def input_pic(path, user_id):
     picture = Picture()
@@ -121,18 +119,6 @@ def update_feature(users, user_id, label):
     user.feature_ing[label] += ing_vector
     user.feature_vector[label] += carolie_vector
     print(user.feature_country)
-    #ラベル:料理名リストのインデックス
-    #対応するカテゴリーのベクトルを読み込む
-
-    user.feature_country[label] +=
-    # for test
-    if user_id == 0:
-        pass
-    else:
-        for i in range(0, N):
-            user.feature_food[i] += randint(5)
-
-
 # ---------
 
 
