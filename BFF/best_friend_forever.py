@@ -101,22 +101,31 @@ def update_feature(users, user_id, label):
     user.feature_country[label] += country_vector
     user.feature_ing[label] += ing_vector
     user.feature_vector[label] += carolie_vector
+    print(user.feature_country)
 
 
 def calc_BFF_rank(usr_id, users):
    user = search_user_by_userid(users, usr_id)
    sim_arr = []
-   my_vector = user.get_feature_food()
+   my_food = user.feature_food
+   my_country = user.feature_country
+   my_ing = user.feature_ing
+   my_calorie = user.feature_calorie
    # get_feature_vector
    i = 0
    for user in users:
        print(i)
-       your_vector = user.get_feature_food()
-       print(my_vector, your_vector)
-       sim_arr.append(np.inner(your_vector, my_vector))
+       your_food = user.feature_food
+       your_country = user.feature_country
+       your_ing = user.feature_ing
+       your_calorie = user.feature_calorie
+       sim_arr.append(np.inner(your_food, my_food))
+       sim_arr.append(np.inner(your_country, my_country))
+       sim_arr.append(np.inner(your_ing, my_ing))
+       sim_arr.append(np.inner(your_calorie, my_calorie))
        i += 1
 
-   return sim_arr
+   return np.mean(sim_arr)
 
 
 def show_BFF_rank(usr_id, users):
@@ -152,7 +161,7 @@ def generate_users():
 
 if __name__ == '__main__':
 
-    # users = generate_users()
+    users = generate_users()
 
     '''
     print('path->')
@@ -160,17 +169,17 @@ if __name__ == '__main__':
     user_id = input()
     '''
 
-    # path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_003.jpg"
-    # user_id = 0
+    path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_003.jpg"
+    user_id = 0
     #
-    # picture = input_pic(path, user_id)
+    picture = input_pic(path, user_id)
     #
-    # label = predict(picture)
+    label = predict(picture)
     #
-    # update_feature(users, user_id, label)
+    update_feature(users, user_id, label)
 
     # calc_BFF_rank(user_id, users)
 
     # show_BFF_rank(user_id, users)
 
-    print(load_category(0))
+    #print(load_category(0))
