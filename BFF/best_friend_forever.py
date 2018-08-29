@@ -25,13 +25,6 @@ class User:
         self.feature_calorie = np.zeros(CALORIE_NUM)
         self.user_id = user_id
 
-        self.feature_calorie = np.zeros(CAL_NUM)
-        self.user_id = user_id
-
-        self.feature_calorie = np.zeros(CAL_NUM)
-        self.user_id = user_id
-
-
 class Picture:
     def __init__(self):
         self.pic_id = None
@@ -195,13 +188,13 @@ if __name__ == '__main__':
     path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_003.jpg"
     user_id = 0
     #
-    picture = input_pic(path, user_id)
+    #picture = input_pic(path, user_id)
     #
-    label = predict(picture)
+    #label = predict(picture)
     #
-    update_feature(users, user_id, label)
+    #update_feature(users, user_id, label)
 
-    # calc_BFF_rank(user_id, users)
+    calc_BFF_rank(user_id, users)
 
     # show_BFF_rank(user_id, users)
 
