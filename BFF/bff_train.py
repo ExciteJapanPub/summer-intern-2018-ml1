@@ -8,17 +8,18 @@ import tensorflow as tf
 from sklearn import metrics
 from tqdm import tqdm
 import pandas as pd
+import pickle
 
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-IMAGE_SIZE = 28
+IMAGE_SIZE = 128
 CHANNEL_NUM = 3
 IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * CHANNEL_NUM
 
 CLASS_NUM = 101
 
-EPOCH_SIZE = 1
+EPOCH_SIZE = 30
 BATCH_SIZE = 300
 
 LEARNING_RATE = 1e-4
@@ -50,6 +51,8 @@ def image2array(image_path):
 def load_images(images_path):
     images = []
     labels = []
+    images_for_save = []
+    labels_for_save = []
 
     # print('\n- load', labels_path.name)
 
@@ -229,10 +232,26 @@ if __name__ == '__main__':
     class_df = class_df.rename(columns={0: 'class'})
     class_df['lable'] = [i for i in range(CLASS_NUM)]
     class_df = class_df.set_index('class')
-    print(class_df)
+    # print(class_df)
     # 学習データをロードする
-    train_lsit = load_images(TRAIN_IMAGES_PATH)
+    # train_lsit = load_images(TRAIN_IMAGES_PATH)
+    images = []
+    labels = []
+    for i in range(1, CLASS_NUM):
+        fname = "train_list" + str(i) + ".txt"
+        f = open("./dataset/meta/train_dump/" + fname, "rb")
+        load_data = pickle.load(f)
+        images.extend(load_data[0])
+        labels.extend(load_data[1])
+    train_list = images, labels
+    for i in range(1, CLASS_NUM):
+        fname = "test_list" + str(i) + ".txt"
+        f = open("./dataset/meta/test_dump/" + fname, "rb")
+        load_data = pickle.load(f)
+        images.extend(load_data[0])
+        labels.extend(load_data[1])
+    test_list = images, labels
     # 評価データをロードする
-    test_list = load_images(TEST_IMAGES_PATH)
+    # test_list = load_images(TEST_IMAGES_PATH)
     # 学習開始
-    train(train_lsit, test_list)
+    train(train_list, test_list)
