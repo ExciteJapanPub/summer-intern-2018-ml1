@@ -10,22 +10,16 @@ import pickle
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 
-IMAGE_SIZE = 128
-CHANNEL_NUM = 3
-IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * CHANNEL_NUM
+IMAGE_SIZE = 28
 
 CLASS_NUM = 101
 
-EPOCH_SIZE = 30
-BATCH_SIZE = 300
-
-LEARNING_RATE = 1e-4
+DUMP_SIZE = 750
 
 DATA_PATH = pathlib.Path('./dataset')
 TRAIN_IMAGES_PATH = DATA_PATH / 'meta/train.txt'
 LABELS_PATH = DATA_PATH / 'meta/classes.txt'
 TEST_IMAGES_PATH = DATA_PATH / 'meta/test.txt'
-CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
 
 class_df = pd.read_table(LABELS_PATH, header=None)
 
@@ -63,9 +57,10 @@ def load_images(images_path):
             images.append(image)
             labels.append(int(label))
 
-            if count % 250 == 249:
+            if count % DUMP_SIZE == DUMP_SIZE-1:
                 test_list = images, labels
-                fname = "dataset/meta/test_dump/test_list" + str(int((count+1)/750)) + '.txt'
+                fname = "dataset/meta/train_dump/train_list" + str(int((count+1)/DUMP_SIZE)) + '.txt'
+                #fname = "dataset/meta/test_dump/test_list" + str(int((count+1)/DUMP_SIZE)) + '.txt'
                 f = open(fname, 'wb')
                 pickle.dump(test_list, f)
                 f.close()
