@@ -2,9 +2,14 @@
 import numpy as np
 import tensorflow as tf
 import bff_train as train
+import pandas as pd
 
 N = 5
-# categryのデータをpandasで読み込み
+CATEGORY_PATH = "/Users/excite1/Work/summer-intern-2018-ml1/BFF/category.ver2.1.csv"
+
+category_df = pd.read_csv(CATEGORY_PATH)
+# FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
+
 
 class User:
     def __init__(self, user_id):
@@ -24,14 +29,21 @@ class Picture:
         self.feature_vector = None
 
 
-# FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
-
 def input_pic(path, user_id):
     picture = Picture()
     picture.file_path = path
     picture.user_id = user_id
 
     return picture
+
+
+def load_category(label):
+    user_category = category_df.loc[label, :]
+    country = user_category[['中華', '和食', 'アメリカ', 'イタリアン・フレンチ', 'アジア・エスニック']]
+    ingredient = user_category[['牛肉', '豚肉', '鶏肉', '魚', '海産物',	'野菜', '卵', '豆', '芋',	'乳製品',
+                               'ご飯', '麵類', '揚げ物', '小麦粉']]
+    calorie = user_category[['高カロリー',	 '中カロリー',  '低カロリー']]
+    return country.values, ingredient.values, calorie.values
 
 
 def predict(picture):
@@ -66,6 +78,7 @@ def predict(picture):
         print(f'prediction={label} probas={probas} image={picture.file_path}')
 
         picture.food_num = label
+        picture.feature_vector = load_category(label)
         # feature_vectorを参照して代入
         return label
 
@@ -82,9 +95,6 @@ def update_feature(users, user_id, label):
     user = search_user_by_userid(users, user_id)
     assert user is not None
     user.feature_food[label] += 1
-
-
-# ---------
 
 
 def calc_BFF_rank(usr_id, users):
@@ -136,7 +146,7 @@ def generate_users():
 
 if __name__ == '__main__':
 
-    users = generate_users()
+    # users = generate_users()
 
     '''
     print('path->')
@@ -145,7 +155,7 @@ if __name__ == '__main__':
     '''
 
     # path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_003.jpg"
-    user_id = 0
+    # user_id = 0
     #
     # picture = input_pic(path, user_id)
     #
@@ -153,6 +163,8 @@ if __name__ == '__main__':
     #
     # update_feature(users, user_id, label)
 
-    calc_BFF_rank(user_id, users)
+    # calc_BFF_rank(user_id, users)
 
-    show_BFF_rank(user_id, users)
+    # show_BFF_rank(user_id, users)
+
+    print(load_category(0))
