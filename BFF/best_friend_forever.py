@@ -4,7 +4,10 @@ import tensorflow as tf
 import bff_train as train
 import pandas as pd
 
-N = 5
+N = 101
+COUNTRY_NUM = 5
+ING_NUM = 10
+CALORIE_NUM = 3
 CATEGORY_PATH = "/Users/excite1/Work/summer-intern-2018-ml1/BFF/category.ver2.1.csv"
 
 category_df = pd.read_csv(CATEGORY_PATH)
@@ -14,11 +17,10 @@ category_df = pd.read_csv(CATEGORY_PATH)
 class User:
     def __init__(self, user_id):
         self.feature_food = np.zeros(N)
+        self.feature_country = np.zeros(COUNTRY_NUM)
+        self.feature_ing = np.zeros(ING_NUM)
+        self.feature_calorie = np.zeros(CALORIE_NUM)
         self.user_id = user_id
-
-    def get_feature_food(self):
-        return self.feature_food
-
 
 class Picture:
     def __init__(self):
@@ -95,6 +97,10 @@ def update_feature(users, user_id, label):
     user = search_user_by_userid(users, user_id)
     assert user is not None
     user.feature_food[label] += 1
+    country_vector, ing_vector, carolie_vector = load_category()
+    user.feature_country[label] += country_vector
+    user.feature_ing[label] += ing_vector
+    user.feature_vector[label] += carolie_vector
 
 
 def calc_BFF_rank(usr_id, users):
