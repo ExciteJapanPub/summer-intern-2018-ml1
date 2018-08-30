@@ -14,6 +14,7 @@ CALORIE_NUM = 3
 CATEGORY_PATH = "/Users/excite1/Work/summer-intern-2018-ml1/BFF/category.ver2.1.csv"
 
 category_df = pd.read_csv(CATEGORY_PATH)
+
 # FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
 
 from numpy.random import *
