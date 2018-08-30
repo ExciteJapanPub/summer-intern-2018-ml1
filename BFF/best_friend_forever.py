@@ -123,17 +123,22 @@ def serch_picture_by_pictureid(pictures, user_id):
 
 
 def update_feature(users, user_id, label):
+    print(label)
+    label = int(label)
+    print(label)
     user = search_user_by_userid(users, user_id)
     assert user is not None
+
     print(user.feature_calorie[0])
-    user.feature_food[0][label] += 1
+    print(user.feature_food)
+    user.feature_food[label] += 1
+    print(user.feature_food)
+
     country_vector, ing_vector, carolie_vector = load_category(label)
-    user.feature_country[0] = user.feature_country[0] + country_vector
-    user.feature_ing[0] = user.feature_ing[0] + ing_vector
-    user.feature_calorie[0] = user.feature_calorie[0] + carolie_vector
-    print(user.feature_calorie[0])
-
-
+    user.feature_country = user.feature_country + country_vector
+    user.feature_ing = user.feature_ing + ing_vector
+    user.feature_calorie = user.feature_calorie + carolie_vector
+    print(user.feature_calorie)
 # ---------
 
 
@@ -182,13 +187,15 @@ def generator():
     with train.TEST_IMAGES_PATH.open() as f:
         lines = f.readlines()
         for j in range(10):
-            k = np.random.randint(25250)
+            # k = np.random.randint(25250)
+            k = 0
             line = lines[k]
             dish_name, filename = line.rstrip().split('/')
-            path = dish_name + '/' + filename + '.jpg'
+            path = "./dataset/images/" + dish_name + '/' + filename + '.jpg'
 
             picture = input_pic(path, i)
             label = predict(picture)
+            print(label)
             update_feature(user_lst, i, label)
 
     # user.feature_food = np.random.randint(10, size=(1, N))
@@ -241,8 +248,23 @@ if __name__ == '__main__':
     args = parser.parse_args()
     user_id = args.your_id
 
+    '''
+    print('path->')
+    path = input()
+    user_id = input()
+    '''
 
     users = generator()
+    #
+    # path = args.pathimage
+    #
+    # picture = input_pic(path, user_id)
+    #
+    # label = predict(picture)
+    #
+    # update_feature(USERS, user_id, label)
 
     # print(calc_BFF_similarity(users))
-    print(show_BFF_rank(user_id, users))
+    # show_BFF_rank(user_id, USERS)
+
+    #print(load_category(0))
