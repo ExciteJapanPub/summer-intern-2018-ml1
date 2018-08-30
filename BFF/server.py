@@ -58,12 +58,13 @@ def ranking():
 
 # 画像アップロードと予測結果表示
 @app.route('/send', methods=['GET', 'POST'])
-def send(user_id):
+def send():
     if request.method == 'GET':
         title = "upload"
         return render_template('upload.html', title=title)
 
     elif request.method == 'POST':
+        user_id = 0
         title = "picture information"
         img_file = request.files['img_file']
         if img_file and allowed_file(img_file.filename):
