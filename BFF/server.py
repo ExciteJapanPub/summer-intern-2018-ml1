@@ -21,6 +21,11 @@ class_df = class_df.set_index('label')
 app = Flask(__name__)
 
 # ここからウェブアプリケーション用のルーティングを記述
+@app.route('/')
+def index():
+    send_path = url_for("send", _external=True)
+    ranking_path = url_for("ranking", _external=True)
+    return render_template('index.html', send_path=send_path, ranking_path=ranking_path)
 
 @app.route('/ranking', methods=['GET', 'POST'])
 def ranking():
