@@ -3,6 +3,8 @@ import tensorflow as tf
 import bff_train as train
 from tqdm import tqdm
 
+SAVED_CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
+
 
 def predict(image_path):
     # 画像の準備
@@ -25,7 +27,7 @@ def predict(image_path):
         sess.run(tf.global_variables_initializer())
 
         # モデルの読み込み
-        saver.restore(sess, train.CHECKPOINT)
+        saver.restore(sess, SAVED_CHECKPOINT)
 
         # 実行
         probas, predicted_label = sess.run([y, class_label])
