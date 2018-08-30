@@ -48,6 +48,20 @@ def normalize(v, axis=-1, order=2):
     return v/l2
 
 
+def generator():
+    user_lst = []
+    for i in range(0, 10):
+    # writer = csv.writer(f)
+        user = User(i)
+        user.feature_food = np.random.randint(10, size=(1, N))
+        user.feature_country = np.random.randint(10, size=(1, COUNTRY_NUM))
+        user.feature_ing = np.random.randint(10, size=(1, ING_NUM))
+        user.feature_calorie = np.random.randint(10, size=(1, CALORIE_NUM))
+        user_lst.append(user)
+
+    return user_lst
+
+
 def input_pic(path, user_id):
     picture = Picture()
     picture.file_path = path
@@ -141,13 +155,14 @@ def calc_BFF_similarity(users):
 
     return similarity
 
+USERS = generator()
 
-def show_BFF_rank(usr_id, users):
+def show_BFF_rank(usr_id, users=USERS):
    arr = calc_BFF_rank(usr_id, users)
    friend_list = np.argsort(arr)[::-1]
    print(friend_list[:5])
 
-   return friend_list, arr
+   return friend_list, np.sort(arr)[::-1]
 
 
 def load_users():
@@ -167,21 +182,10 @@ def load_users():
     return user_df.values
 
 
-def generator():
-    user_lst = []
-    for i in range(0, 10):
-    # writer = csv.writer(f)
-        user = User(i)
-        user.feature_food = np.random.randint(10, size=(1, N))
-        user.feature_country = np.random.randint(10, size=(1, COUNTRY_NUM))
-        user.feature_ing = np.random.randint(10, size=(1, ING_NUM))
-        user.feature_calorie = np.random.randint(10, size=(1, CALORIE_NUM))
-        user_lst.append(user)
-
-    return user_lst
 
 
-USERS = generator()
+
+
 
 
 def calc_BFF_rank(usr_id, users=USERS):

@@ -4,7 +4,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import pandas as pd
 import numpy as np
-from best_friend_forever import input_pic, predict, load_category
+from best_friend_forever import input_pic, predict, load_category, show_BFF_rank
 import glob
 
 UPLOAD_FILE_PATH = './static/uploads'
@@ -39,36 +39,42 @@ def index():
 @app.route('/ranking', methods=['GET', 'POST'])
 def ranking():
     title = "your BFF"
-    friend_list = [2, 4, 6, 5, 7, 8, 10, 22, 88]
-    friend_similarity = [0.95, 0.94, 0.93, 0.90, 0.88, 0.74, 0.55, 0.43, 0.21]
+    # friend_list = [2, 4, 6, 5, 7, 8, 10, 22, 88]
+    # friend_similarity = [0.95, 0.94, 0.93, 0.90, 0.88, 0.74, 0.55, 0.43, 0.21]
     user_name = 0
+    friend_list, friend_similarity = show_BFF_rank(user_name)
 
     if request.method == 'GET':
-        return render_template('ranking.html', title=title)
+        return render_template('ranking.html', title=title, user_name=user_name)
 
     if request.method == 'POST':
         number_bff = request.form['number_BFF']
+        users_path = []
+        for friend in friend_list:
+            users_path.append("/" + str(friend))
         if int(number_bff) > len(friend_list):
             return redirect(url_for('ranking'))
         return render_template('ranking.html',
                                title=title, user_name=user_name, friend_list=friend_list,
-                               friend_similarity=friend_similarity, number_BFF=int(number_bff))
+                               friend_similarity=friend_similarity, number_BFF=int(number_bff),
+                               users_path=users_path)
     else:
         return redirect(url_for('ranking'))
 
 # 画像アップロードと予測結果表示
 @app.route('/send', methods=['GET', 'POST'])
-def send(user_id):
+def send():
     if request.method == 'GET':
         title = "upload"
         return render_template('upload.html', title=title)
 
     elif request.method == 'POST':
+        user_id = 0
         title = "picture information"
         img_file = request.files['img_file']
         if img_file and allowed_file(img_file.filename):
-            img_file.save(os.path.join(UPLOAD_FILE_PATH + "/" + user_id, img_file.filename))
-            img_url = './static/uploads/' + user_id + "/" + img_file.filename
+            img_file.save(os.path.join(UPLOAD_FILE_PATH + "/" + str(user_id), img_file.filename))
+            img_url = './static/uploads/' + str(user_id) + "/" + img_file.filename
             dishname, tags = get_picture_info(img_url, user_id)
             return render_template('disp.html', title=title, img_url=img_url, dishname=dishname, tag_country=tags[0], tag_ingredient=tags[1], tag_calorie=tags[2])
         else:
