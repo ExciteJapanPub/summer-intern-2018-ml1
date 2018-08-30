@@ -1,6 +1,11 @@
 # Flask などの必要なライブラリをインポートする
-from flask import Flask, render_template, request, redirect, url_for
+import os
+
+from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import numpy as np
+
+UPLOAD_FILE_PATH = './uploads'
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif'])
 
 # 自身の名称を app という名前でインスタンス化する
 app = Flask(__name__)
@@ -39,10 +44,35 @@ def post():
         # エラーなどでリダイレクトしたい場合はこんな感じで
         return redirect(url_for('index'))
 
-@app.route('/upload')
-def disp_uploadpage():
-    title = "upload"
-    return render_template('upload.html', title=title)
+@app.route('/upload', method=['GET', 'POST'])
+def uploadpage():
+    if request.method == 'GET':
+        title = "upload"
+        return render_template('upload.html', title=title)
+
+    elif request.method == 'POST':
+        title = "picture information"
+        img_file = request.files['img_file']
+        if img_file and allowed_file(img_file.filename):
+            img_file.save(os.path.join(UPLOAD_FILE_PATH, img_file.filename))
+            img_url = '/uploads/' + img_file.filename
+            dishname, tags = get_picture_info(img_url)
+            return render_template('disp.html', title=title, img_url=img_url, tag=tags, dishname=dishname)
+        else:
+            return ''' <p>許可されていない拡張子です</p> '''
+
+
+def get_picture_info(img_url):
+    user_id = 0
+    path = img_url
+    picture = input_pic(path, user_id)
+    label = predict(picture)
+    dishname =
+
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
 
 if __name__ == '__main__':
     app.debug = True # デバッグモード有効化

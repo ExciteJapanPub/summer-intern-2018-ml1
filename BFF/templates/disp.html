@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block content %}
+  {% if img_url %}
+<p><img src="{{ img_url }}"></p>
+  {% endif %}
+<p>{{ dishname }}</p>
+{% endblock %}
