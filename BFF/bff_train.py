@@ -19,8 +19,8 @@ IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * CHANNEL_NUM
 
 CLASS_NUM = 101
 
-EPOCH_SIZE = 30
-BATCH_SIZE = 300
+EPOCH_SIZE = 1
+BATCH_SIZE = 256
 
 LEARNING_RATE = 1e-4
 
@@ -31,7 +31,8 @@ LABELS_PATH = DATA_PATH / 'meta/classes.txt'
 # TEST_LABELS_PATH = DATA_PATH / 'labels/test.csv'
 TEST_IMAGES_PATH = DATA_PATH / 'meta/test.txt'
 # CHECKPOINT = './checkpoint/mnist_cnn.ckpt'
-CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
+SAVED_CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
+CHECKPOINT = '../checkpoint/dish_101_cnn_1000.ckpt'
 
 class_df = pd.read_table(LABELS_PATH, header=None)
 
@@ -199,6 +200,9 @@ def train(trains, tests):
         # セッションの開始及び初期化
         sess.run(tf.global_variables_initializer())
 
+        # モデルの読み込み
+        saver.restore(sess, SAVED_CHECKPOINT)
+
         # 学習
         print('\n- start training')
         for epoch in range(EPOCH_SIZE):
@@ -236,6 +240,7 @@ if __name__ == '__main__':
     # 学習データをロードする
     # train_lsit = load_images(TRAIN_IMAGES_PATH)
     print('start loading data set.')
+
     images = []
     labels = []
     for i in range(1, CLASS_NUM):
