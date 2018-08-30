@@ -20,7 +20,7 @@ IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * CHANNEL_NUM
 CLASS_NUM = 101
 
 EPOCH_SIZE = 1
-BATCH_SIZE = 512
+BATCH_SIZE = 256
 
 LEARNING_RATE = 1e-4
 
@@ -249,7 +249,7 @@ if __name__ == '__main__':
         images.extend(load_data[0])
         labels.extend(load_data[1])
     train_list = images, labels
-    for i in range(1, CLASS_NUM):
+    for i in range(1, CLASS_NUM, 30):
         fname = "test_list" + str(i) + ".txt"
         f = open("./dataset/meta/test_dump/" + fname, "rb")
         load_data = pickle.load(f)
