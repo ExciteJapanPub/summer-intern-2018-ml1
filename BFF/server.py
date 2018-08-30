@@ -3,12 +3,13 @@ import os
 
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import pandas as pd
-from best_friend_forever import input_pic, predict
+import numpy as np
+from best_friend_forever import input_pic, predict, load_category
 
 UPLOAD_FILE_PATH = './static/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif'])
 
-# class dic
+# class 辞書
 LABELS_PATH = './dataset/meta/classes.txt'
 CLASS_NUM = 101
 
@@ -17,16 +18,23 @@ class_df = class_df.rename(columns={0: 'class'})
 class_df['label'] = [i for i in range(CLASS_NUM)]
 class_df = class_df.set_index('label')
 
+#tag 辞書
+dic_tag_country = ['中華', '和食', 'アメリカ', 'イタリアン・フレンチ', 'アジア・エスニック']
+dic_tag_ingredient = ['牛肉', '豚肉', '鶏肉', '魚', '海産物', '野菜', '卵', '豆', '芋', '乳製品', 'ご飯', '麵類', '揚げ物', '小麦粉']
+dic_tag_calorie = ['高カロリー', '中カロリー', '低カロリー']
+
 # 自身の名称を app という名前でインスタンス化する
 app = Flask(__name__)
 
 # ここからウェブアプリケーション用のルーティングを記述
+# root
 @app.route('/')
 def index():
     send_path = url_for("send", _external=True)
     ranking_path = url_for("ranking", _external=True)
     return render_template('index.html', send_path=send_path, ranking_path=ranking_path)
 
+# ランキング表示
 @app.route('/ranking', methods=['GET', 'POST'])
 def ranking():
     title = "your BFF"
@@ -47,6 +55,7 @@ def ranking():
     else:
         return redirect(url_for('ranking'))
 
+# 画像アップロードと予測結果表示
 @app.route('/send', methods=['GET', 'POST'])
 def send():
     if request.method == 'GET':
@@ -59,8 +68,9 @@ def send():
         if img_file and allowed_file(img_file.filename):
             img_file.save(os.path.join(UPLOAD_FILE_PATH, img_file.filename))
             img_url = './static/uploads/' + img_file.filename
-            dishname = get_picture_info(img_url)
-            return render_template('disp.html', title=title, img_url=img_url, dishname=dishname)
+            dishname, tags = get_picture_info(img_url)
+
+            return render_template('disp.html', title=title, img_url=img_url, dishname=dishname, tag_country=tags[0], tag_ingredient=tags[1], tag_calorie=tags[2])
         else:
             return ''' <p>許可されていない拡張子です</p> '''
 
@@ -69,9 +79,16 @@ def get_picture_info(img_url):
     path = img_url
     picture = input_pic(path, user_id)
     label = predict(picture)
+    tag_labels = load_category(label)
+
+    tags = []
+    tags.append(dic_tag_country[tag_labels[0].tolist().index(1)])
+    tags.append(dic_tag_ingredient[tag_labels[1].tolist().index(1)])
+    tags.append(dic_tag_calorie[tag_labels[2].tolist().index(1)])
+
     dishname = class_df.at[label, 'class']
 
-    return dishname
+    return dishname, tags
 
 def allowed_file(filename):
     return '.' in filename and \

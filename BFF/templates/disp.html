@@ -1,9 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-  {% if img_url %}
 <p><img src="{{ img_url }}"></p>
-  {% endif %}
-  {% if img_url %}
 <p>{{ dishname }}</p>
-  {% endif %}
+<p>tag</p>
+<li>{{ tag_country }}</li>
+<li>{{ tag_ingredient }}</li>
+<li>{{ tag_calorie }}</li>
 {% endblock %}
