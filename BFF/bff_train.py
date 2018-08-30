@@ -239,7 +239,8 @@ if __name__ == '__main__':
     # print(class_df)
     # 学習データをロードする
     # train_lsit = load_images(TRAIN_IMAGES_PATH)
-    print('start loading data sets')
+    print('start loading data set.')
+
     images = []
     labels = []
     for i in range(1, CLASS_NUM):

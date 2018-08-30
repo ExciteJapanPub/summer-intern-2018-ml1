@@ -15,6 +15,8 @@ CALORIE_NUM = 3
 CATEGORY_PATH = "/Users/excite1/Work/summer-intern-2018-ml1/BFF/category.ver2.1.csv"
 
 category_df = pd.read_csv(CATEGORY_PATH)
+pictures = []
+
 # FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
 
 from numpy.random import *
@@ -45,10 +47,13 @@ def normalize(v, axis=-1, order=2):
     l2[l2==0] = 1
     return v/l2
 
+
 def input_pic(path, user_id):
     picture = Picture()
     picture.file_path = path
     picture.user_id = user_id
+
+    pictures.append(picture)
 
     return picture
 
@@ -105,6 +110,16 @@ def search_user_by_userid(users, user_id):
             return user
 
     return None
+
+def serch_picture_by_pictureid(pictures, user_id):
+    result = []
+
+    for picture in pictures:
+        if picture.user_id == user_id:
+            result.append(picture)
+
+    return result
+
 
 
 def update_feature(users, user_id, label):
