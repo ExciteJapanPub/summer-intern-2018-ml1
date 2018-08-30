@@ -31,8 +31,8 @@ LABELS_PATH = DATA_PATH / 'meta/classes.txt'
 # TEST_LABELS_PATH = DATA_PATH / 'labels/test.csv'
 TEST_IMAGES_PATH = DATA_PATH / 'meta/test.txt'
 # CHECKPOINT = './checkpoint/mnist_cnn.ckpt'
-SAVED_CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
-CHECKPOINT = '../checkpoint/dish_101_cnn_1000.ckpt'
+CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
+# CHECKPOINT = '../checkpoint/dish_101_cnn_1000.ckpt'
 
 class_df = pd.read_table(LABELS_PATH, header=None)
 
@@ -243,7 +243,7 @@ if __name__ == '__main__':
 
     images = []
     labels = []
-    for i in range(1, CLASS_NUM):
+    for i in range(1, CLASS_NUM,5):
         fname = "train_list" + str(i) + ".txt"
         f = open("./dataset/meta/train_dump/" + fname, "rb")
         load_data = pickle.load(f)
