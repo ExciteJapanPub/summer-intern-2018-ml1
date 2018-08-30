@@ -149,9 +149,10 @@ def calc_BFF_rank(usr_id, users):
 
 def show_BFF_rank(usr_id, users):
    arr = calc_BFF_rank(usr_id, users)
-   temp = np.argsort(arr)[::-1]
-   print(temp[:5])
+   friend_list = np.argsort(arr)[::-1]
+   print(friend_list[:5])
 
+   return friend_list
 
 
 def generate_users():
