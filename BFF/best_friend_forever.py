@@ -127,16 +127,21 @@ def calc_BFF_rank(usr_id, users):
    my_calorie = user.feature_calorie
    # get_feature_vector
    i = 0
+   #
+   weight_food = 1
+   weight_country = 1
+   weight_ingredient = 1
+   weight_calorie = 1
    for user in users:
        print(i)
        your_food = user.feature_food
        your_country = user.feature_country
        your_ing = user.feature_ing
        your_calorie = user.feature_calorie
-       sim_arr.append(np.inner(your_food, my_food))
-       sim_arr.append(np.inner(your_country, my_country))
-       sim_arr.append(np.inner(your_ing, my_ing))
-       sim_arr.append(np.inner(your_calorie, my_calorie))
+       sim_arr.append(np.inner(your_food, my_food)*weight_food)
+       sim_arr.append(np.inner(your_country, my_country)*weight_country)
+       sim_arr.append(np.inner(your_ing, my_ing)*weight_ingredient)
+       sim_arr.append(np.inner(your_calorie, my_calorie)*weight_calorie)
        your_vector = user.get_feature_food()
        my_vector = normalize(my_vector)
        your_vector = normalize(your_vector)
@@ -176,7 +181,6 @@ def generate_users():
        label = predict(picture)
        update_feature(users, i, label)
 
-   print(users.shape)
    return users
 
 
