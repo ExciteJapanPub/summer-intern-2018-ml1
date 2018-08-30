@@ -1,16 +1,20 @@
 
+
 import numpy as np
 import tensorflow as tf
 import bff_train as train
 import pandas as pd
+import csv
+import argparse
 
 N = 101
 COUNTRY_NUM = 5
-ING_NUM = 10
+ING_NUM = 14
 CALORIE_NUM = 3
 CATEGORY_PATH = "/Users/excite1/Work/summer-intern-2018-ml1/BFF/category.ver2.1.csv"
 
 category_df = pd.read_csv(CATEGORY_PATH)
+
 # FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
 
 from numpy.random import *
@@ -147,9 +151,10 @@ def calc_BFF_rank(usr_id, users):
 
 def show_BFF_rank(usr_id, users):
    arr = calc_BFF_rank(usr_id, users)
-   temp = np.argsort(arr)[::-1]
-   print(temp[:5])
+   friend_list = np.argsort(arr)[::-1]
+   print(friend_list[:5])
 
+   return friend_list
 
 
 def generate_users():
@@ -173,21 +178,38 @@ def generate_users():
        label = predict(picture)
        update_feature(users, i, label)
 
+   print(users.shape)
    return users
 
 
+def load_users():
+    user_list = []
+    f = open('user_data.csv', 'r', errors='', newline='')
+    usr_data = csv.reader(f, delimiter=',', doublequote=True, lineterminator='¥r¥n', skipinitialspace=True)
+    for row in usr_data:
+        user_list.append([row[0],row[1]])
+    print(len(user_list))
+    return user_list
+
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Best food friend", add_help=True)
+    parser.add_argument('--pathimage', '-t', type=str,
+                        default='"/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/"')
+    parser.add_argument('--your_id', '-i', type=int, default=0)
 
-    users = generate_users()
+    args = parser.parse_args()
+    user_id = args.your_id
 
+    users = load_users()
+
+    print(users)
     '''
     print('path->')
     path = input()
     user_id = input()
     '''
 
-    path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_003.jpg"
-    user_id = 0
+    path = args.pathimage
     #
     #picture = input_pic(path, user_id)
     #
