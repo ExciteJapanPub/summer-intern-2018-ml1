@@ -243,7 +243,7 @@ if __name__ == '__main__':
 
     images = []
     labels = []
-    for i in range(1, CLASS_NUM):
+    for i in range(1, CLASS_NUM,5):
         fname = "train_list" + str(i) + ".txt"
         f = open("./dataset/meta/train_dump/" + fname, "rb")
         load_data = pickle.load(f)

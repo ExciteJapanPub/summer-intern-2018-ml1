@@ -1,5 +1,4 @@
 
-
 import numpy as np
 import tensorflow as tf
 import bff_train as train
@@ -7,6 +6,7 @@ import pandas as pd
 import csv
 import argparse
 from scipy.spatial.distance import cosine
+from random import random
 
 N = 101
 COUNTRY_NUM = 5
@@ -133,6 +133,7 @@ def update_feature(users, user_id, label):
     user.feature_calorie[0] = user.feature_calorie[0] + carolie_vector
     print(user.feature_calorie[0])
 
+
 # ---------
 
 
@@ -171,15 +172,29 @@ def load_users():
 
 def generator():
     user_lst = []
-    for i in range(0, 10):
+    for i in range(10):
     # writer = csv.writer(f)
         user = User(i)
-        user.feature_food = np.random.randint(10, size=(1, N))
-        user.feature_country = np.random.randint(10, size=(1, COUNTRY_NUM))
-        user.feature_ing = np.random.randint(10, size=(1, ING_NUM))
-        user.feature_calorie = np.random.randint(10, size=(1, CALORIE_NUM))
         user_lst.append(user)
 
+        path_list = []
+
+    with train.TEST_IMAGES_PATH.open() as f:
+        lines = f.readlines()
+        for j in range(10):
+            k = np.random.randint(25250)
+            line = lines[k]
+            dish_name, filename = line.rstrip().split('/')
+            path = dish_name + '/' + filename + '.jpg'
+
+            picture = input_pic(path, i)
+            label = predict(picture)
+            update_feature(user_lst, i, label)
+
+    # user.feature_food = np.random.randint(10, size=(1, N))
+    # user.feature_country = np.random.randint(10, size=(1, COUNTRY_NUM))
+    # user.feature_ing = np.random.randint(10, size=(1, ING_NUM))
+    # user.feature_calorie = np.random.randint(10, size=(1, CALORIE_NUM))
     return user_lst
 
 
@@ -226,21 +241,8 @@ if __name__ == '__main__':
     args = parser.parse_args()
     user_id = args.your_id
 
-    '''
-    print('path->')
-    path = input()
-    user_id = input()
-    '''
 
-    path = args.pathimage
-
-    picture = input_pic(path, user_id)
-
-    label = predict(picture)
-
-    update_feature(USERS, user_id, label)
+    users = generator()
 
     # print(calc_BFF_similarity(users))
-    show_BFF_rank(user_id, USERS)
-
-    #print(load_category(0))
+    print(show_BFF_rank(user_id, users))
