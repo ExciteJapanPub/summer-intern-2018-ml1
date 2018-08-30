@@ -31,8 +31,8 @@ LABELS_PATH = DATA_PATH / 'meta/classes.txt'
 # TEST_LABELS_PATH = DATA_PATH / 'labels/test.csv'
 TEST_IMAGES_PATH = DATA_PATH / 'meta/test.txt'
 # CHECKPOINT = './checkpoint/mnist_cnn.ckpt'
-SAVED_CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
-CHECKPOINT = '../checkpoint/dish_101_cnn_1000.ckpt'
+CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
+# CHECKPOINT = '../checkpoint/dish_101_cnn_1000.ckpt'
 
 class_df = pd.read_table(LABELS_PATH, header=None)
 
