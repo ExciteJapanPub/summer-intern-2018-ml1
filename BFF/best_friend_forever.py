@@ -160,30 +160,6 @@ def show_BFF_rank(usr_id, users):
    return friend_list
 
 
-def generate_users():
-   users = []
-   path_list = [
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_008.jpg',
-       '1_008.jpg',
-       '2_008.jpg',
-       '3_008.jpg',
-       '4_008.jpg']
-
-   for i in range(0, 10):
-       users.append(User(i))
-       path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/" + path_list[i]
-       picture = input_pic(path, i)
-       label = predict(picture)
-       update_feature(users, i, label)
-
-   return users
-
-
 def load_users():
     user_list = []
     f = open('user_data.csv', 'r', errors='', newline='')

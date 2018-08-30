@@ -52,22 +52,37 @@ def update_feature(users, user_id):
 
 
 # save user_data as a csv file
-def save_user_data(users):
-    f = open('user_data.csv', 'w')
-    for i in range(0, NUM_USERS):
+def save_user_data(users, num_users=NUM_USERS, add_flag=0):
+
+    if add_flag == 0:
+        f = open('user_data.csv', 'w')
+        for i in range(0, num_users):
+            writer = csv.writer(f)
+
+            csvlist = []
+            csvlist.append(users[i].user_id)
+            csvlist.append(users[i].feature_food)
+            csvlist.append(users[i].feature_country)
+            csvlist.append(users[i].feature_ing)
+            csvlist.append(users[i].feature_calorie)
+
+            writer.writerow(csvlist)
+
+        f.close()
+    else:
+        f = open('user_data.csv', 'a')
         writer = csv.writer(f)
 
         csvlist = []
-        csvlist.append(users[i].user_id)
-        csvlist.append(users[i].feature_food)
-        csvlist.append(users[i].feature_country)
-        csvlist.append(users[i].feature_ing)
-        csvlist.append(users[i].feature_calorie)
+        csvlist.append(users.user_id)
+        csvlist.append(users.feature_food)
+        csvlist.append(users.feature_country)
+        csvlist.append(users.feature_ing)
+        csvlist.append(users.feature_calorie)
 
         writer.writerow(csvlist)
 
-    f.close()
-
+        f.close()
 
 # show user_id and vectors in console(for test use)
 def show_users():
