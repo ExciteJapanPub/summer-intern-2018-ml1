@@ -1,29 +1,23 @@
 import numpy as np
 from numpy.random import *
-import argparse
-import bff_train as train
-import tensorflow as tf
 import csv
+import pandas as pd
+from tqdm import tqdm
+from best_friend_forever import User
+
 
 # define constant
-N = 5
-NUM_USERS = 10
+FOOD_NUM = 101
+COUNTRY_NUM = 5
+ING_NUM = 14
+CALORIE_NUM = 3
 
+NUM_USERS = 100
 
-# define user data
-class User:
-    def __init__(self, user_id):
-        self.feature_food = np.zeros(N)
-        self.user_id = user_id
+CATEGORY_PATH = "/Users/excite1/Work/summer-intern-2018-ml1/BFF/category.ver2.1.csv"
 
+category_df = pd.read_csv(CATEGORY_PATH)
 
-# define picture data
-class Picture:
-    def __init__(self):
-        self.pic_id = None
-        self.user_id = None
-        self.file_path = None
-        self.food_num = None
 
 
 def search_user_by_userid(users, user_id):
@@ -34,62 +28,30 @@ def search_user_by_userid(users, user_id):
     return None
 
 
-def update_feature(users, user_id, label):
+# load category vectors from csv file
+def load_category(label):
+    user_category = category_df.loc[label, :]
+    country = user_category[['中華', '和食', 'アメリカ', 'イタリアン・フレンチ', 'アジア・エスニック']]
+    ingredient = user_category[['牛肉', '豚肉', '鶏肉', '魚', '海産物',	'野菜', '卵', '豆', '芋',	'乳製品',
+                               'ご飯', '麵類', '揚げ物', '小麦粉']]
+    calorie = user_category[['高カロリー',	 '中カロリー',  '低カロリー']]
+    return country.values, ingredient.values, calorie.values
+
+
+# update user's food vector with random number
+def update_feature(users, user_id):
     user = search_user_by_userid(users, user_id)
     assert user is not None
-    user.feature_food[label] += 1
-    # for test
-    if user_id == 0:
-        pass
-    else:
-        for i in range(0, N):
-            user.feature_food[i] += randint(5)
+    for i in range(0, FOOD_NUM):
+        user.feature_food[i] += randint(10)
+        coefficient = user.feature_food[i]
+        country_vector, ing_vector, carolie_vector = load_category(i)
+        user.feature_country += country_vector.astype('int64') * coefficient
+        user.feature_ing += ing_vector.astype('int64') * coefficient
+        user.feature_calorie += carolie_vector.astype('int64') * coefficient
 
 
-def input_pic(path, user_id):
-    picture = Picture()
-    picture.file_path = path
-    picture.user_id = user_id
-
-    return picture
-
-
-def predict(picture):
-    # 画像の準備
-    image = train.image2array(picture.file_path)
-    if image is None:
-        print('not image:', picture.file_path)
-        return None
-
-    with tf.Graph().as_default():
-        # 予測
-        x = np.asarray([image])
-        y = tf.nn.softmax(train.inference(x, 1.0))
-        class_label = tf.argmax(y, 1)
-
-        # 保存の準備
-        saver = tf.train.Saver()
-        # セッションの作成
-        sess = tf.Session()
-        # セッションの開始及び初期化
-        sess.run(tf.global_variables_initializer())
-
-        # モデルの読み込み
-        saver.restore(sess, train.CHECKPOINT)
-
-        # 実行
-        probas, predicted_label = sess.run([y, class_label])
-
-        # 結果
-        label = predicted_label[0]
-        probas = [f'{p:5.3f}' for p in probas[0]]
-        print(f'prediction={label} probas={probas} image={picture.file_path}')
-
-        picture.food_num = label
-
-        return label
-
-
+# save user_data as a csv file
 def save_user_data(users):
     f = open('user_data.csv', 'w')
     for i in range(0, NUM_USERS):
@@ -98,45 +60,38 @@ def save_user_data(users):
         csvlist = []
         csvlist.append(users[i].user_id)
         csvlist.append(users[i].feature_food)
+        csvlist.append(users[i].feature_country)
+        csvlist.append(users[i].feature_ing)
+        csvlist.append(users[i].feature_calorie)
 
         writer.writerow(csvlist)
 
     f.close()
 
 
-# show user_id and feature_vector in console(for test use)
+# show user_id and vectors in console(for test use)
 def show_users():
     f = open('user_data.csv', 'r', errors='', newline='')
     usr_data = csv.reader(f, delimiter=',', doublequote=True, lineterminator='¥r¥n', skipinitialspace=True)
     for row in usr_data:
         print("user_id:"+str(row[0]))
         print("feature_vector:"+str(row[1]))
+        print("feature_country:"+str(row[2]))
+        print("feature_ingredient:"+str(row[3]))
+        print("feature_calorie:"+str(row[4]))
 
 def generate_users():
     users = []
-    path_list = [
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_008.jpg',
-       '1_008.jpg',
-       '2_008.jpg',
-       '3_008.jpg',
-       '4_008.jpg']
 
-    for i in range(0, NUM_USERS):
+    print("Generating user data...")
+    for i in tqdm(range(0, NUM_USERS)):
        users.append(User(i))
-       path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/" + path_list[i]
-       picture = input_pic(path, i)
-       label = predict(picture)
-       update_feature(users, i, label)
+       update_feature(users, i)
 
     save_user_data(users)
-
+    print("Generated. user_data file saved")
 
 if __name__ == '__main__':
     generate_users()
-    # for test use
-    show_users()
+    # for test check use
+    # show_users()
