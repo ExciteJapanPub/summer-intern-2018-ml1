@@ -1,6 +1,7 @@
 import numpy as np
 import tensorflow as tf
-import mnist_cnn_train as train
+import bff_train as train
+from tqdm import tqdm
 
 
 def predict(image_path):
@@ -39,27 +40,12 @@ def predict(image_path):
 
 if __name__ == '__main__':
     # 予測
-    path_list = [
-        '0_10.jpg',
-        '1_1097.jpg',
-        '2_868.jpg',
-        '3_8561.jpg',
-        '4_8613.jpg',
-        '5_955.jpg',
-        '6_5441.jpg',
-        '7_1100.jpg',
-        '8_5360.jpg',
-        '9_105.jpg',
-        '0_3764.jpg',
-        '1_1527.jpg',
-        '2_583.jpg',
-        '3_9905.jpg',
-        '4_3780.jpg',
-        '5_3855.jpg',
-        '6_1982.jpg',
-        '7_4966.jpg',
-        '8_3206.jpg',
-        '9_6157.jpg',
-    ]
+    path_list = []
+    with train.TEST_IMAGES_PATH.open() as f:
+        for line in f:
+            dishname, filename = line.rstrip().split('/')
+            path_list.append(dishname + '/' + filename + '.jpg')
+            break
     for path in path_list:
-        predict(str(train.TEST_IMAGES_PATH / path))
+        predict('./dataset/images/' + path)
+
