@@ -113,7 +113,7 @@ def update_feature(users, user_id, label):
     country_vector, ing_vector, carolie_vector = load_category()
     user.feature_country[label] += country_vector
     user.feature_ing[label] += ing_vector
-    user.feature_calorie[label] += carolie_vector
+    user.feature_vector[label] += carolie_vector
     print(user.feature_country)
 # ---------
 
@@ -149,9 +149,10 @@ def calc_BFF_rank(usr_id, users):
 
 def show_BFF_rank(usr_id, users):
    arr = calc_BFF_rank(usr_id, users)
-   temp = np.argsort(arr)[::-1]
-   print(temp[:5])
+   friend_list = np.argsort(arr)[::-1]
+   print(friend_list[:5])
 
+   return friend_list
 
 
 def generate_users():
@@ -208,13 +209,14 @@ if __name__ == '__main__':
 
     path = args.pathimage
     #
-    picture = input_pic(path, user_id)
+    #picture = input_pic(path, user_id)
     #
-    label = predict(picture)
+    #label = predict(picture)
     #
-    update_feature(users, user_id, label)
+    #update_feature(users, user_id, label)
 
     calc_BFF_rank(user_id, users)
 
-    show_BFF_rank(user_id, users)
+    # show_BFF_rank(user_id, users)
 
+    #print(load_category(0))
