@@ -205,7 +205,7 @@ def train(trains, tests):
             # ミニバッチ法
             keys = list(range(len(train_x)))
             random.shuffle(keys)
-            for i in range(len(keys) // BATCH_SIZE):
+            for i in tqdm(range(len(keys) // BATCH_SIZE)):
                 batch_keys = keys[BATCH_SIZE*i:BATCH_SIZE*(i+1)]
                 batch_x = np.asarray([train_x[key] for key in batch_keys])
                 batch_y = np.asarray([train_y[key] for key in batch_keys])
@@ -235,6 +235,7 @@ if __name__ == '__main__':
     # print(class_df)
     # 学習データをロードする
     # train_lsit = load_images(TRAIN_IMAGES_PATH)
+    print('start loading data set.')
     images = []
     labels = []
     for i in range(1, CLASS_NUM):
@@ -244,7 +245,7 @@ if __name__ == '__main__':
         images.extend(load_data[0])
         labels.extend(load_data[1])
     train_list = images, labels
-    for i in range(1, CLASS_NUM):
+    for i in range(1, CLASS_NUM, 30):
         fname = "test_list" + str(i) + ".txt"
         f = open("./dataset/meta/test_dump/" + fname, "rb")
         load_data = pickle.load(f)
