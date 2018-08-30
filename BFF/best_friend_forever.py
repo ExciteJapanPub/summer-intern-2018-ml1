@@ -110,18 +110,20 @@ def search_user_by_userid(users, user_id):
 def update_feature(users, user_id, label):
     user = search_user_by_userid(users, user_id)
     assert user is not None
-    user.feature_food[label] += 1
-    country_vector, ing_vector, carolie_vector = load_category()
-    user.feature_country[label] += country_vector
-    user.feature_ing[label] += ing_vector
-    user.feature_vector[label] += carolie_vector
+    print(user.feature_calorie[0])
+    user.feature_food[0][label] += 1
+    country_vector, ing_vector, carolie_vector = load_category(label)
+    user.feature_country[0] = user.feature_country[0] + country_vector
+    user.feature_ing[0] = user.feature_ing[0] + ing_vector
+    user.feature_calorie[0] = user.feature_calorie[0] + carolie_vector
+    print(user.feature_calorie[0])
+
 # ---------
 
 
 def calc_BFF_similarity(users):
     similarity = []
     for user in users:
-        print(user.user_id)
         similarity.append(calc_BFF_rank(user.user_id, users))
 
     return similarity
@@ -132,7 +134,7 @@ def show_BFF_rank(usr_id, users):
    friend_list = np.argsort(arr)[::-1]
    print(friend_list[:5])
 
-   return friend_list, arr
+   return friend_list, np.sort(arr)[::-1]
 
 
 def load_users():
@@ -195,8 +197,6 @@ def calc_BFF_rank(usr_id, users=USERS):
        sim_arr.append(1 - cosine(your_country, my_country)*weight_country)
        sim_arr.append(1 - cosine(your_ing, my_ing)*weight_ingredient)
        sim_arr.append(1 - cosine(your_calorie, my_calorie)*weight_calorie)
-       if user.user_id == 4:
-           print(sim_arr)
        sim_arr_lst.append(np.mean(sim_arr))
 
    return sim_arr_lst
@@ -205,13 +205,11 @@ def calc_BFF_rank(usr_id, users=USERS):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description="Best food friend", add_help=True)
     parser.add_argument('--pathimage', '-t', type=str,
-                        default='"/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/"')
+                        default="dataset/images/apple_pie/134.jpg")
     parser.add_argument('--your_id', '-i', type=int, default=0)
 
     args = parser.parse_args()
     user_id = args.your_id
-
-    users = generator()
 
     '''
     print('path->')
@@ -220,14 +218,14 @@ if __name__ == '__main__':
     '''
 
     path = args.pathimage
-    #
-    #picture = input_pic(path, user_id)
-    #
-    #label = predict(picture)
-    #
-    #update_feature(users, user_id, label)
+
+    picture = input_pic(path, user_id)
+
+    label = predict(picture)
+
+    update_feature(USERS, user_id, label)
 
     # print(calc_BFF_similarity(users))
-    print(show_BFF_rank(user_id, users))
+    show_BFF_rank(user_id, USERS)
 
     #print(load_category(0))
