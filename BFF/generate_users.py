@@ -80,6 +80,7 @@ def show_users():
         print("feature_ingredient:"+str(row[3]))
         print("feature_calorie:"+str(row[4]))
 
+
 def generate_users():
     users = []
 
@@ -90,6 +91,7 @@ def generate_users():
 
     save_user_data(users)
     print("Generated. user_data file saved")
+
 
 if __name__ == '__main__':
     generate_users()
