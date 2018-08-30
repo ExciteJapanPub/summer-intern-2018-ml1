@@ -63,25 +63,24 @@ def load_images(images_path):
             images.append(image)
             labels.append(int(label))
 
-            if count % 250 == 249:
-                test_list = images, labels
-                fname = "dataset/meta/test_dump/test_list" + str(int((count+1)/750)) + '.txt'
+            if count % 750 == 749:
+                train_list = images, labels
+                fname = "dataset/meta/train_dump/train_list" + str(int((count+1)/750)) + '.txt'
                 f = open(fname, 'wb')
-                pickle.dump(test_list, f)
+                pickle.dump(train_list, f)
                 f.close()
                 images = []
                 labels = []
 
             count += 1
 
-
-
     assert len(images) == len(labels)
 
     return images, labels
+
 
 if __name__ == '__main__':
     class_df = class_df.rename(columns={0: 'class'})
     class_df['lable'] = [i for i in range(CLASS_NUM)]
     class_df = class_df.set_index('class')
-    train_list = load_images(TRAIN_IMAGES_PATH)
+    test_list = load_images(TRAIN_IMAGES_PATH)

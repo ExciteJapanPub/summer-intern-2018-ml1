@@ -20,7 +20,7 @@ IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * CHANNEL_NUM
 CLASS_NUM = 101
 
 EPOCH_SIZE = 30
-BATCH_SIZE = 300
+BATCH_SIZE = 256
 
 LEARNING_RATE = 1e-4
 
@@ -205,7 +205,7 @@ def train(trains, tests):
             # ミニバッチ法
             keys = list(range(len(train_x)))
             random.shuffle(keys)
-            for i in range(len(keys) // BATCH_SIZE):
+            for i in tqdm(range(len(keys) // BATCH_SIZE)):
                 batch_keys = keys[BATCH_SIZE*i:BATCH_SIZE*(i+1)]
                 batch_x = np.asarray([train_x[key] for key in batch_keys])
                 batch_y = np.asarray([train_y[key] for key in batch_keys])
@@ -237,14 +237,14 @@ if __name__ == '__main__':
     # train_lsit = load_images(TRAIN_IMAGES_PATH)
     images = []
     labels = []
-    for i in range(1, CLASS_NUM):
+    for i in range(1, CLASS_NUM, 10):
         fname = "train_list" + str(i) + ".txt"
         f = open("./dataset/meta/train_dump/" + fname, "rb")
         load_data = pickle.load(f)
         images.extend(load_data[0])
         labels.extend(load_data[1])
     train_list = images, labels
-    for i in range(1, CLASS_NUM):
+    for i in range(1, CLASS_NUM, 10):
         fname = "test_list" + str(i) + ".txt"
         f = open("./dataset/meta/test_dump/" + fname, "rb")
         load_data = pickle.load(f)
