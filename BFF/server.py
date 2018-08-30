@@ -5,6 +5,7 @@ from flask import Flask, render_template, request, redirect, url_for, send_from_
 import pandas as pd
 import numpy as np
 from best_friend_forever import input_pic, predict, load_category
+import glob
 
 UPLOAD_FILE_PATH = './static/uploads'
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'gif'])
@@ -57,7 +58,7 @@ def ranking():
 
 # 画像アップロードと予測結果表示
 @app.route('/send', methods=['GET', 'POST'])
-def send():
+def send(user_id):
     if request.method == 'GET':
         title = "upload"
         return render_template('upload.html', title=title)
@@ -66,16 +67,14 @@ def send():
         title = "picture information"
         img_file = request.files['img_file']
         if img_file and allowed_file(img_file.filename):
-            img_file.save(os.path.join(UPLOAD_FILE_PATH, img_file.filename))
-            img_url = './static/uploads/' + img_file.filename
-            dishname, tags = get_picture_info(img_url)
-
+            img_file.save(os.path.join(UPLOAD_FILE_PATH + "/" + user_id, img_file.filename))
+            img_url = './static/uploads/' + user_id + "/" + img_file.filename
+            dishname, tags = get_picture_info(img_url, user_id)
             return render_template('disp.html', title=title, img_url=img_url, dishname=dishname, tag_country=tags[0], tag_ingredient=tags[1], tag_calorie=tags[2])
         else:
             return ''' <p>許可されていない拡張子です</p> '''
 
-def get_picture_info(img_url):
-    user_id = 0
+def get_picture_info(img_url, user_id):
     path = img_url
     picture = input_pic(path, user_id)
     label = predict(picture)
@@ -93,6 +92,11 @@ def get_picture_info(img_url):
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+@app.route('/<user_id>')
+def user(user_id):
+    file_paths = glob.glob("./static/uploads/" + user_id + "/*")
+    return render_template('user.html', file_paths=file_paths, user_id=user_id)
 
 
 if __name__ == '__main__':
