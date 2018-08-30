@@ -48,3 +48,4 @@ if __name__ == '__main__':
             break
     for path in path_list:
         predict('./dataset/images/' + path)
+
