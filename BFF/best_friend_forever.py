@@ -41,6 +41,7 @@ def normalize(v, axis=-1, order=2):
     l2[l2==0] = 1
     return v/l2
 
+
 def input_pic(path, user_id):
     picture = Picture()
     picture.file_path = path
