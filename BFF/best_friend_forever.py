@@ -189,7 +189,7 @@ def load_users():
     f = open('user_data.csv', 'r', errors='', newline='')
     usr_data = csv.reader(f, delimiter=',', doublequote=True, lineterminator='¥r¥n', skipinitialspace=True)
     for row in usr_data:
-        user_list.append([row[0],row[1]])
+        user_list.append([row[0],row[1],row[2],row[3],row[4]])
     print(len(user_list))
     return user_list
 
