@@ -1,13 +1,11 @@
 
 import os
 import pathlib
-import cv2
 import random
 import numpy as np
 import tensorflow as tf
 from sklearn import metrics
-from tqdm import tqdm
-import pandas as pd
+import pickle
 
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
@@ -18,10 +16,13 @@ IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * CHANNEL_NUM
 
 CLASS_NUM = 101
 
-EPOCH_SIZE = 1
+EPOCH_SIZE = 30
 BATCH_SIZE = 300
 
 LEARNING_RATE = 1e-4
+
+MODE_TRAIN = 0
+MODE_TEST = 1
 
 DATA_PATH = pathlib.Path('./dataset')
 TRAIN_IMAGES_PATH = DATA_PATH / 'meta/train.txt'
@@ -32,43 +33,21 @@ TEST_IMAGES_PATH = DATA_PATH / 'meta/test.txt'
 # CHECKPOINT = './checkpoint/mnist_cnn.ckpt'
 CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
 
-class_df = pd.read_table(LABELS_PATH, header=None)
-
-
-def image2array(image_path):
-    image = cv2.imread(image_path, cv2.IMREAD_COLOR)
-    if image is None:
-        return None
-
-    # リサイズ&正規化
-    image = cv2.resize(image, (IMAGE_SIZE, IMAGE_SIZE))
-    image = image.flatten().astype(np.float32) / 255.0
-
-    return image
-
-
-def load_images(images_path):
+def load_images(mode):
     images = []
     labels = []
 
-    # print('\n- load', labels_path.name)
+    for i in range(1, CLASS_NUM):
+        if mode == 0:
+            fname = "train_list" + str(i) + ".txt"
+            f = open("./dataset/meta/train_dump/" + fname, "rb")
+        elif mode == 1:
+            fname = "test_list" + str(i) + ".txt"
+            f = open("./dataset/meta/test_dump/" + fname, "rb")
 
-    with images_path.open() as f:
-        # 各行のファイル名と正解ラベルを取り出しリスト化する
-        for line in tqdm(f):
-            dishname, filename = line.rstrip().split('/')
-            label = class_df.at[dishname, 'lable']
-            # print("label_str = " + dishname)
-            # print("label = " + str(label))
-            image_path = str("./dataset/images/" + dishname + '/' + filename + '.jpg')
-            image = image2array(image_path)
-            if image is None:
-                print('not image:', image_path)
-                continue
-            images.append(image)
-            labels.append(int(label))
-
-    assert len(images) == len(labels)
+        load_data = pickle.load(f)
+        images.extend(load_data[0])
+        labels.extend(load_data[1])
 
     return images, labels
 
@@ -226,13 +205,9 @@ def train(trains, tests):
 
 
 if __name__ == '__main__':
-    class_df = class_df.rename(columns={0: 'class'})
-    class_df['lable'] = [i for i in range(CLASS_NUM)]
-    class_df = class_df.set_index('class')
-    print(class_df)
     # 学習データをロードする
-    train_lsit = load_images(TRAIN_IMAGES_PATH)
+    train_list = load_images(MODE_TRAIN)
     # 評価データをロードする
-    test_list = load_images(TEST_IMAGES_PATH)
+    test_list = load_images(MODE_TEST)
     # 学習開始
-    train(train_lsit, test_list)
+    train(train_list, test_list)
