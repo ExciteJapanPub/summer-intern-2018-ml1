@@ -52,9 +52,9 @@ def update_feature(users, user_id):
 
 
 # save user_data as a csv file
-def save_user_data(users, num_users=NUM_USERS, add_flag=1):
+def save_user_data(users, num_users=NUM_USERS, add_flag=0):
 
-    if add_flag == 1:
+    if add_flag == 0:
         f = open('user_data.csv', 'w')
         for i in range(0, num_users):
             writer = csv.writer(f)
