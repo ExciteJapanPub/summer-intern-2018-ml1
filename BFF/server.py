@@ -2,10 +2,6 @@
 import os
 
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
-import numpy as np
-<<<<<<< HEAD
-import best_friend_forever as bff
-=======
 import pandas as pd
 from best_friend_forever import input_pic, predict
 
@@ -20,37 +16,11 @@ class_df = pd.read_table(LABELS_PATH, header=None)
 class_df = class_df.rename(columns={0: 'class'})
 class_df['label'] = [i for i in range(CLASS_NUM)]
 class_df = class_df.set_index('label')
->>>>>>> c33cebf6c35e62b6326bc600a6212d1acaeb9a10
 
 # 自身の名称を app という名前でインスタンス化する
 app = Flask(__name__)
 
 # ここからウェブアプリケーション用のルーティングを記述
-<<<<<<< HEAD
-# index にアクセスしたときの処理
-@app.route('/')
-def index():
-    title = "ようこそ"
-    message = picked_up()
-    # index.html をレンダリングする
-    return render_template('index.html',
-                           message=message, title=title)
-
-
-# /post にアクセスしたときの処理
-@app.route('/post', methods=['GET', 'POST'])
-def post():
-    title = "こんにちは"
-    if request.method == 'POST':
-        # リクエストフォームから「名前」を取得して
-        name = request.form['name']
-        # index.html をレンダリングする
-        return render_template('index.html',
-                               name=name, title=title)
-    else:
-        # エラーなどでリダイレクトしたい場合はこんな感じで
-        return redirect(url_for('index'))
-
 
 @app.route('/ranking', methods=['GET', 'POST'])
 def ranking():
@@ -72,14 +42,6 @@ def ranking():
     else:
         return redirect(url_for('ranking'))
 
-
-
-
-@app.route('/upload')
-def disp_uploadpage():
-    title = "upload"
-    return render_template('upload.html', title=title)
-=======
 @app.route('/send', methods=['GET', 'POST'])
 def send():
     if request.method == 'GET':
@@ -109,8 +71,6 @@ def get_picture_info(img_url):
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
-
->>>>>>> c33cebf6c35e62b6326bc600a6212d1acaeb9a10
 
 
 if __name__ == '__main__':
