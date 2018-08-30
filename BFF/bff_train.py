@@ -19,8 +19,8 @@ IMAGE_PIXELS = IMAGE_SIZE * IMAGE_SIZE * CHANNEL_NUM
 
 CLASS_NUM = 101
 
-EPOCH_SIZE = 30
-BATCH_SIZE = 300
+EPOCH_SIZE = 1
+BATCH_SIZE = 256
 
 LEARNING_RATE = 1e-4
 
@@ -31,7 +31,8 @@ LABELS_PATH = DATA_PATH / 'meta/classes.txt'
 # TEST_LABELS_PATH = DATA_PATH / 'labels/test.csv'
 TEST_IMAGES_PATH = DATA_PATH / 'meta/test.txt'
 # CHECKPOINT = './checkpoint/mnist_cnn.ckpt'
-CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
+SAVED_CHECKPOINT = '../checkpoint/dish_101_cnn.ckpt'
+CHECKPOINT = '../checkpoint/dish_101_cnn_1000.ckpt'
 
 class_df = pd.read_table(LABELS_PATH, header=None)
 
@@ -199,13 +200,16 @@ def train(trains, tests):
         # セッションの開始及び初期化
         sess.run(tf.global_variables_initializer())
 
+        # モデルの読み込み
+        saver.restore(sess, SAVED_CHECKPOINT)
+
         # 学習
         print('\n- start training')
         for epoch in range(EPOCH_SIZE):
             # ミニバッチ法
             keys = list(range(len(train_x)))
             random.shuffle(keys)
-            for i in range(len(keys) // BATCH_SIZE):
+            for i in tqdm(range(len(keys) // BATCH_SIZE)):
                 batch_keys = keys[BATCH_SIZE*i:BATCH_SIZE*(i+1)]
                 batch_x = np.asarray([train_x[key] for key in batch_keys])
                 batch_y = np.asarray([train_y[key] for key in batch_keys])
@@ -235,6 +239,8 @@ if __name__ == '__main__':
     # print(class_df)
     # 学習データをロードする
     # train_lsit = load_images(TRAIN_IMAGES_PATH)
+    print('start loading data set.')
+
     images = []
     labels = []
     for i in range(1, CLASS_NUM):
@@ -244,7 +250,7 @@ if __name__ == '__main__':
         images.extend(load_data[0])
         labels.extend(load_data[1])
     train_list = images, labels
-    for i in range(1, CLASS_NUM):
+    for i in range(1, CLASS_NUM, 30):
         fname = "test_list" + str(i) + ".txt"
         f = open("./dataset/meta/test_dump/" + fname, "rb")
         load_data = pickle.load(f)
@@ -255,3 +261,4 @@ if __name__ == '__main__':
     # test_list = load_images(TEST_IMAGES_PATH)
     # 学習開始
     train(train_list, test_list)
+

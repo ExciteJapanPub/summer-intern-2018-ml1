@@ -1,16 +1,22 @@
 
+
 import numpy as np
 import tensorflow as tf
 import bff_train as train
 import pandas as pd
+import csv
+import argparse
+from scipy.spatial.distance import cosine
 
 N = 101
 COUNTRY_NUM = 5
-ING_NUM = 10
+ING_NUM = 14
 CALORIE_NUM = 3
 CATEGORY_PATH = "/Users/excite1/Work/summer-intern-2018-ml1/BFF/category.ver2.1.csv"
 
 category_df = pd.read_csv(CATEGORY_PATH)
+pictures = []
+
 # FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
 
 from numpy.random import *
@@ -25,13 +31,6 @@ class User:
         self.feature_calorie = np.zeros(CALORIE_NUM)
         self.user_id = user_id
 
-        self.feature_calorie = np.zeros(CAL_NUM)
-        self.user_id = user_id
-
-        self.feature_calorie = np.zeros(CAL_NUM)
-        self.user_id = user_id
-
-
 class Picture:
     def __init__(self):
         self.pic_id = None
@@ -44,14 +43,17 @@ class Picture:
 # FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
 
 def normalize(v, axis=-1, order=2):
-    l2 = np.linalg.norm(v, ord = order, axis=axis, keepdims=True)
+    l2 = np.linalg.norm(v, axis=axis, ord = order, keepdims=True)
     l2[l2==0] = 1
     return v/l2
+
 
 def input_pic(path, user_id):
     picture = Picture()
     picture.file_path = path
     picture.user_id = user_id
+
+    pictures.append(picture)
 
     return picture
 
@@ -104,10 +106,20 @@ def predict(picture):
 
 def search_user_by_userid(users, user_id):
     for user in users:
-        if user.user_id == user_id:
+        if int(user.user_id) == user_id:
             return user
 
     return None
+
+def serch_picture_by_pictureid(pictures, user_id):
+    result = []
+
+    for picture in pictures:
+        if picture.user_id == user_id:
+            result.append(picture)
+
+    return result
+
 
 
 def update_feature(users, user_id, label):
@@ -118,73 +130,103 @@ def update_feature(users, user_id, label):
     user.feature_country[label] += country_vector
     user.feature_ing[label] += ing_vector
     user.feature_vector[label] += carolie_vector
-    print(user.feature_country)
 # ---------
 
 
-def calc_BFF_rank(usr_id, users):
-   user = search_user_by_userid(users, usr_id)
-   sim_arr = []
-   my_food = user.feature_food
-   my_country = user.feature_country
-   my_ing = user.feature_ing
-   my_calorie = user.feature_calorie
-   # get_feature_vector
-   i = 0
-   for user in users:
-       print(i)
-       your_food = user.feature_food
-       your_country = user.feature_country
-       your_ing = user.feature_ing
-       your_calorie = user.feature_calorie
-       sim_arr.append(np.inner(your_food, my_food))
-       sim_arr.append(np.inner(your_country, my_country))
-       sim_arr.append(np.inner(your_ing, my_ing))
-       sim_arr.append(np.inner(your_calorie, my_calorie))
-       your_vector = user.get_feature_food()
-       my_vector = normalize(my_vector)
-       your_vector = normalize(your_vector)
-       print(my_vector, your_vector)
-       sim_arr.append(np.inner(your_vector, my_vector))
-       i += 1
+def calc_BFF_similarity(users):
+    similarity = []
+    for user in users:
+        print(user.user_id)
+        similarity.append(calc_BFF_rank(user.user_id, users))
 
-   return np.mean(sim_arr)
+    return similarity
 
 
 def show_BFF_rank(usr_id, users):
    arr = calc_BFF_rank(usr_id, users)
-   temp = np.argsort(arr)[::-1]
-   print(temp[:5])
+   friend_list = np.argsort(arr)[::-1]
+   print(friend_list[:5])
+
+   return friend_list, arr
 
 
+def load_users():
+    # user_list = []
+    # f = open('user_data.csv', 'r', errors='', newline='')
+    # usr_data = csv.reader(f, delimiter='.', doublequote=True, lineterminator='¥r¥n', skipinitialspace=True)
+    # for row in usr_data:
+    #     user = User(row[0])
+    #     print(row[0])
+    #     user.feature_food = int(row[1])
+    #     user.feature_country = int(row[2])
+    #     user.feature_ing = int(row[3])
+    #     user.feature_calorie = int(row[4])
+    #     user_list.append(user)
 
-def generate_users():
-   users = []
-   path_list = [
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_003.jpg',
-       '0_008.jpg',
-       '1_008.jpg',
-       '2_008.jpg',
-       '3_008.jpg',
-       '4_008.jpg']
+    user_df = pd.read_csv('user_data2.csv', header=None)
+    return user_df.values
 
-   for i in range(0, 10):
-       users.append(User(i))
-       path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/" + path_list[i]
-       picture = input_pic(path, i)
-       label = predict(picture)
-       update_feature(users, i, label)
 
-   return users
+def generator():
+    user_lst = []
+    for i in range(0, 10):
+    # writer = csv.writer(f)
+        user = User(i)
+        user.feature_food = np.random.randint(10, size=(1, N))
+        user.feature_country = np.random.randint(10, size=(1, COUNTRY_NUM))
+        user.feature_ing = np.random.randint(10, size=(1, ING_NUM))
+        user.feature_calorie = np.random.randint(10, size=(1, CALORIE_NUM))
+        user_lst.append(user)
+
+    return user_lst
+
+
+USERS = generator()
+
+
+def calc_BFF_rank(usr_id, users=USERS):
+
+
+   user = search_user_by_userid(users, usr_id)
+   sim_arr = []
+   my_food = normalize(user.feature_food)
+   my_country = normalize(user.feature_country)
+   my_ing = normalize(user.feature_ing)
+   my_calorie = normalize(user.feature_calorie)
+
+   weight_food = 1
+   weight_country = 1
+   weight_ingredient = 1
+   weight_calorie = 1
+   sim_arr_lst = []
+   for user in users:
+       sim_arr = []
+       #print(user.feature_food)
+       your_food = normalize(user.feature_food)
+       your_country = normalize(user.feature_country)
+       your_ing = normalize(user.feature_ing)
+       your_calorie = normalize(user.feature_calorie)
+       sim_arr.append(1 - cosine(your_food, my_food)*weight_food)
+       sim_arr.append(1 - cosine(your_country, my_country)*weight_country)
+       sim_arr.append(1 - cosine(your_ing, my_ing)*weight_ingredient)
+       sim_arr.append(1 - cosine(your_calorie, my_calorie)*weight_calorie)
+       if user.user_id == 4:
+           print(sim_arr)
+       sim_arr_lst.append(np.mean(sim_arr))
+
+   return sim_arr_lst
 
 
 if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description="Best food friend", add_help=True)
+    parser.add_argument('--pathimage', '-t', type=str,
+                        default='"/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/"')
+    parser.add_argument('--your_id', '-i', type=int, default=0)
 
-    users = generate_users()
+    args = parser.parse_args()
+    user_id = args.your_id
+
+    users = generator()
 
     '''
     print('path->')
@@ -192,17 +234,15 @@ if __name__ == '__main__':
     user_id = input()
     '''
 
-    path = "/Users/excite1/Work/summer-intern-2018-ml1/DISH_data/raw/images/test/2_003.jpg"
-    user_id = 0
+    path = args.pathimage
     #
-    picture = input_pic(path, user_id)
+    #picture = input_pic(path, user_id)
     #
-    label = predict(picture)
+    #label = predict(picture)
     #
-    update_feature(users, user_id, label)
+    #update_feature(users, user_id, label)
 
-    # calc_BFF_rank(user_id, users)
-
-    # show_BFF_rank(user_id, users)
+    # print(calc_BFF_similarity(users))
+    print(show_BFF_rank(user_id, users))
 
     #print(load_category(0))
