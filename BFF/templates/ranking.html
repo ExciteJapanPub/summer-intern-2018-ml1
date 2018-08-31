@@ -10,7 +10,7 @@
           {% if number_BFF %}
             <!--人数 {{ number_BFF }}-->
             {% for n in range(1, number_BFF+1) %}
-            　　<p>user id: <a href="{{ users_path[n] }}">{{ friend_list[n] }}</a>
+            　　<p>user id: <a href="{{ users_path[n] }}">{{ friend_list[n] }}</a><br>
                 similarity: {{ friend_similarity[n] }}
              </p>
 　　　　　　　{% endfor %}

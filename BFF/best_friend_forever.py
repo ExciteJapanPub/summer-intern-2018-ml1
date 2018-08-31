@@ -125,6 +125,7 @@ def search_user_by_userid(users, user_id):
 
     return None
 
+
 def serch_picture_by_pictureid(pictures, user_id):
     result = []
 
@@ -133,7 +134,6 @@ def serch_picture_by_pictureid(pictures, user_id):
             result.append(picture)
 
     return result
-
 
 
 def update_feature(users, user_id, label):
@@ -163,7 +163,9 @@ def calc_BFF_similarity(users):
 
     return similarity
 
+
 USERS = generator()
+
 
 def show_BFF_rank(usr_id, users=USERS):
    arr = calc_BFF_rank(usr_id, users)
@@ -202,15 +204,14 @@ def generator():
     with train.TEST_IMAGES_PATH.open() as f:
         lines = f.readlines()
         for j in range(10):
-            # k = np.random.randint(25250)
-            k = 0
+            k = np.random.randint(25250)
             line = lines[k]
             dish_name, filename = line.rstrip().split('/')
             path = "./dataset/images/" + dish_name + '/' + filename + '.jpg'
 
             picture = input_pic(path, i)
             label = predict(picture)
-            print(label)
+            # print(label)
             update_feature(user_lst, i, label)
 
     # user.feature_food = np.random.randint(10, size=(1, N))
@@ -218,9 +219,6 @@ def generator():
     # user.feature_ing = np.random.randint(10, size=(1, ING_NUM))
     # user.feature_calorie = np.random.randint(10, size=(1, CALORIE_NUM))
     return user_lst
-
-
-
 
 
 def calc_BFF_rank(usr_id, users=USERS):
