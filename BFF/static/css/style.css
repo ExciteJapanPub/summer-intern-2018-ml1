@@ -1,0 +1,28 @@
+body {
+}
+
+ul {
+    margin: auto;
+}
+
+div.main {
+    width: 1200px;
+    margin: auto;
+}
+
+/* user.html */
+
+div.post {
+    padding: 10px;
+    margin: auto;
+}
+
+img.post_pic {
+    width: auto; height: 180px;
+    float: left;
+    margin: 10px 10px;
+}
+
+div.post_info {
+    margin: 10px 10px;
+}

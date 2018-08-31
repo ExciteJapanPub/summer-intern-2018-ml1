@@ -146,9 +146,8 @@ def serch_picture_by_userid(user_id):
     result = []
 
     for picture in pictures:
-        if picture.user_id == user_id:
+        if picture.user_id == int(user_id):
             result.append(picture)
-
     return result
 
 

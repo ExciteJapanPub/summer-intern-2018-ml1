@@ -1,7 +1,24 @@
-<h1>{{ user_id }}</h1>
+{% extends "base.html" %}
+{% block content %}
 
-<ul>
-{% for file_path in file_paths %}
-    <li><img src="{{ file_path }}"></li>
-{% endfor %}
-</ul>
+<div class="main">
+    <h1>{{ user_id }}</h1>
+    <form method="post" action="/send" enctype="multipart/form-data">
+      <input type="file" id="img_file" name="img_file" class="col-sm-4">
+      <input type="submit" value="送信" class="btn">
+    </form>
+    {% for file_path in file_paths %}
+        <div class = post>
+            <img class="post_pic" src="{{ file_path }}">
+            <div class="post_info">
+                <h3>{{ dishnames[loop.index-1] }}</h3>
+                <p>tag</p>
+                <li>{{ dishs_tags[loop.index-1][0] }}</li>
+                <li>{{ dishs_tags[loop.index-1][1] }}</li>
+                <li>{{ dishs_tags[loop.index-1][2] }}</li>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% endblock %}
