@@ -4,7 +4,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import pandas as pd
 import numpy as np
-from best_friend_forever import input_pic, predict, load_category, show_BFF_rank
+from best_friend_forever import input_pic, predict, load_category, show_BFF_rank, generator
 import glob
 
 UPLOAD_FILE_PATH = './static/uploads'
@@ -69,7 +69,7 @@ def send():
         return render_template('upload.html', title=title)
 
     elif request.method == 'POST':
-        user_id = 0
+        user_id = 1
         title = "picture information"
         img_file = request.files['img_file']
         if img_file and allowed_file(img_file.filename):
@@ -106,6 +106,6 @@ def user(user_id):
 
 
 if __name__ == '__main__':
-    print(app.url_map)
+    generator()
     app.debug = True # デバッグモード有効化
     app.run(host='127.0.0.1') # どこからでもアクセス可能に
