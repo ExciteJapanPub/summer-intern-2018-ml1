@@ -4,11 +4,29 @@
 <p class="lead">
   {% if number_BFF %}
     <!--人数 {{ number_BFF }}-->
+    Your BFF are
+    <p>
     {% for n in range(1, number_BFF+1) %}
-    　　<p>user id: <a href="{{ users_path[n] }}">{{ friend_list[n] }}</a>
-        similarity: {{ friend_similarity[n] }}
-     </p>
-　　　{% endfor %}
+        <br>
+        {% if n==1 %}
+            <img src="static/img/1.png" width="150" height="150">
+        {% elif n==2 %}
+            <img src="static/img/2.png" width="150" height="150">
+        {% elif n==3 %}
+            <img src="static/img/3.png" width="150" height="150">
+        {% elif n==4 %}
+            <img src="static/img/4.png" width="150" height="150">
+        {% elif n==5 %}
+            <img src="static/img/5.png" width="150" height="150">
+        {% elif n==6 %}
+            <img src="static/img/6.png" width="150" height="150">
+        {% else %}
+            <img src="static/img/7.png" width="150" height="150">
+        {% endif %}
+        <br>user id: <a href="{{ users_path[n] }}">{{ friend_list[n] }}</a>
+        <br>similarity: {{ '{:.2f}'.format(friend_similarity[n]*100) }}％
+{% endfor %}
+  </p>
   {% else %}
     こんにちは {{ user_name }} さん
     何人のBFFが必要ですか？（100人以下で入力してください）

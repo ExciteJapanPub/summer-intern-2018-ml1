@@ -82,6 +82,7 @@ def send():
         else:
             return ''' <p>許可されていない拡張子です</p> '''
 
+
 def get_picture_info(label):
     tag_labels = load_category(label)
 
@@ -94,9 +95,11 @@ def get_picture_info(label):
 
     return dishname, tags
 
+
 def allowed_file(filename):
     return '.' in filename and \
         filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
 
 @app.route('/<user_id>')
 def user(user_id):
