@@ -4,7 +4,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, send_from_directory
 import pandas as pd
 import numpy as np
-from best_friend_forever import input_pic, predict, load_category, show_BFF_rank, generator
+from best_friend_forever import input_pic, predict, load_category, show_BFF_rank, generator, serch_picture_by_userid
 import glob
 
 UPLOAD_FILE_PATH = './static/uploads'
@@ -69,22 +69,21 @@ def send():
         return render_template('upload.html', title=title)
 
     elif request.method == 'POST':
-        user_id = 1
+        user_id = 0
         title = "picture information"
         img_file = request.files['img_file']
         if img_file and allowed_file(img_file.filename):
             img_file.save(os.path.join(UPLOAD_FILE_PATH + "/" + str(user_id), img_file.filename))
             img_url = './static/uploads/' + str(user_id) + "/" + img_file.filename
-            dishname, tags = get_picture_info(img_url, user_id)
+            picture = input_pic(img_url, user_id)
+            label = predict(picture)
+            dishname, tags = get_picture_info(label)
             return render_template('disp.html', title=title, img_url=img_url, dishname=dishname, tag_country=tags[0], tag_ingredient=tags[1], tag_calorie=tags[2])
         else:
             return ''' <p>許可されていない拡張子です</p> '''
 
 
-def get_picture_info(img_url, user_id):
-    path = img_url
-    picture = input_pic(path, user_id)
-    label = predict(picture)
+def get_picture_info(label):
     tag_labels = load_category(label)
 
     tags = []
@@ -104,8 +103,21 @@ def allowed_file(filename):
 
 @app.route('/<user_id>')
 def user(user_id):
-    file_paths = glob.glob("./static/uploads/" + user_id + "/*")
-    return render_template('user.html', file_paths=file_paths, user_id=user_id)
+    if user_id != "favicon.ico":
+        pictures = serch_picture_by_userid(user_id)
+        file_paths = []
+        dishnames = []
+        dishs_tags = []
+        for picture in pictures:
+            file_paths.append(picture.file_path)
+            dishname, tags = get_picture_info(picture.food_num)
+            dishnames.append(dishname)
+            dishs_tags.append(tags)
+
+        print(dishnames)
+        return render_template('user.html', file_paths=file_paths, user_id=user_id, dishnames=dishnames, dishs_tags=dishs_tags)
+    else:
+        return render_template("user.html", file_paths=[], user_id=-1)
 
 
 if __name__ == '__main__':
