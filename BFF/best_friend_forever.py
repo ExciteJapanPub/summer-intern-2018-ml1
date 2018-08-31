@@ -42,6 +42,7 @@ class Picture:
 
 # FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
 
+
 def normalize(v):
     n = 0
     for i in v:
@@ -153,7 +154,7 @@ def generator():
                 k = np.random.randint(25250)
                 line = lines[k]
                 dish_name, filename = line.rstrip().split('/')
-                path = "./dataset/images/" + dish_name + '/' + filename + '.jpg'
+                path = "./static/dataset/images/" + dish_name + '/' + filename + '.jpg'
 
                 picture = input_pic(path, i)
                 label = predict(picture)

@@ -24,7 +24,7 @@ BATCH_SIZE = 256
 
 LEARNING_RATE = 1e-4
 
-DATA_PATH = pathlib.Path('./dataset')
+DATA_PATH = pathlib.Path('./static/dataset')
 TRAIN_IMAGES_PATH = DATA_PATH / 'meta/train.txt'
 # TRAIN_LABELS_PATH = DATA_PATH / 'labels/train.csv'
 LABELS_PATH = DATA_PATH / 'meta/classes.txt'
