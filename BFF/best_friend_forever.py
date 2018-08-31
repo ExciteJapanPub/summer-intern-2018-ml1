@@ -125,8 +125,8 @@ def search_user_by_userid(users, user_id):
 
     return None
 
+def serch_picture_by_userid(user_id):
 
-def serch_picture_by_pictureid(pictures, user_id):
     result = []
 
     for picture in pictures:
