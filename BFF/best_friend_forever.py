@@ -64,7 +64,7 @@ def generator():
             k = 0
             line = lines[k]
             dish_name, filename = line.rstrip().split('/')
-            path = "./dataset/images/" + dish_name + '/' + filename + '.jpg'
+            path = "./static/dataset/images/" + dish_name + '/' + filename + '.jpg'
 
             picture = input_pic(path, i)
             label = predict(picture)
