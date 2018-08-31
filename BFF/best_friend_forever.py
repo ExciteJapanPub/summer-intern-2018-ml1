@@ -137,9 +137,7 @@ def serch_picture_by_pictureid(pictures, user_id):
 
 
 def update_feature(users, user_id, label):
-    print(label)
     label = int(label)
-    print(label)
     user = search_user_by_userid(users, user_id)
     assert user is not None
 
