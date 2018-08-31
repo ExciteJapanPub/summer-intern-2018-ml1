@@ -69,7 +69,7 @@ def send():
         return render_template('upload.html', title=title)
 
     elif request.method == 'POST':
-        user_id = 1
+        user_id = 0
         title = "picture information"
         img_file = request.files['img_file']
         if img_file and allowed_file(img_file.filename):
@@ -101,13 +101,15 @@ def allowed_file(filename):
 
 @app.route('/<user_id>')
 def user(user_id):
-    pictures = serch_picture_by_userid(user_id)
-    file_paths = []
-    for picture in pictures:
-        print(picture.file_path)
-        file_paths.append(picture.file_path)
+    if user_id != "favicon.ico":
+        pictures = serch_picture_by_userid(user_id)
+        file_paths = []
+        for picture in pictures:
+            file_paths.append(picture.file_path)
 
-    return render_template('user.html', file_paths=file_paths, user_id=user_id)
+        return render_template('user.html', file_paths=file_paths, user_id=user_id)
+    else:
+        return render_template("user.html", file_paths=[], user_id=-1)
 
 
 if __name__ == '__main__':
