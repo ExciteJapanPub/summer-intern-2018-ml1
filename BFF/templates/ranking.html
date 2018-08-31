@@ -1,31 +1,23 @@
-{% extends "layout.html" %}
+{% extends "base.html" %}
 {% block content %}
-  <!-- Form
-  ================================================== -->
-<div class="form">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <p class="lead">
-          {% if number_BFF %}
-            <!--人数 {{ number_BFF }}-->
-            {% for n in range(1, number_BFF+1) %}
-            　　<p>user id: <a href="{{ users_path[n] }}">{{ friend_list[n] }}</a>
-                similarity: {{ friend_similarity[n] }}
-             </p>
+
+<p class="lead">
+  {% if number_BFF %}
+    <!--人数 {{ number_BFF }}-->
+    {% for n in range(1, number_BFF+1) %}
+    　　<p>user id: <a href="{{ users_path[n] }}">{{ friend_list[n] }}</a>
+        similarity: {{ friend_similarity[n] }}
+     </p>
 　　　　　　　{% endfor %}
-          {% else %}
-            こんにちは {{ user_name }} さん
-            何人のBFFが必要ですか？（100人以下で入力してください）
-          {% endif %}
-        </p>
-      　<form action="/ranking" method="post" class="form-inline">
-          <label for="number_BFF">人数</label>
-          <input type="number" class="form-control" id="number_BFF" name="number_BFF">
-          <button type="submit" class="btn btn-default">送信する</button>
-        </form>
-      </div>
-    </div>
-  </div>
-</div>
+  {% else %}
+    こんにちは {{ user_name }} さん
+    何人のBFFが必要ですか？（100人以下で入力してください）
+  {% endif %}
+</p>
+<form action="/ranking" method="post" class="form-inline">
+  <label for="number_BFF">人数</label>
+  <input type="number" class="form-control" id="number_BFF" name="number_BFF">
+  <button type="submit" class="btn btn-default">送信する</button>
+</form>
+
 {% endblock %}

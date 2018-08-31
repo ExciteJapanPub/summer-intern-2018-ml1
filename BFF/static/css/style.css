@@ -1,0 +1,30 @@
+body {
+}
+
+ul {
+    margin: auto;
+}
+
+div.main {
+    border: solid #00ff00;
+    width: 1200px;
+    margin: auto;
+}
+
+/* user.html */
+
+div.post {
+    border: solid #000000;
+    padding: 10px;
+    margin: auto;
+}
+
+img.post_pic {
+    width: auto; height: 120px;
+    float: left;
+    margin: 10px 10px;
+}
+
+div.post_info {
+    margin: 10px 10px;
+}
