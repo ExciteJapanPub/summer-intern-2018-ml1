@@ -137,16 +137,14 @@ def serch_picture_by_userid(user_id):
 
 
 def update_feature(users, user_id, label):
-    print(label)
     label = int(label)
-    print(label)
     user = search_user_by_userid(users, user_id)
     assert user is not None
 
-    print(user.feature_calorie[0])
-    print(user.feature_food)
+    # print(user.feature_calorie[0])
+    # print(user.feature_food)
     user.feature_food[label] += 1
-    print(user.feature_food)
+    # print(user.feature_food)
 
     country_vector, ing_vector, carolie_vector = load_category(label)
     user.feature_country = user.feature_country + country_vector
