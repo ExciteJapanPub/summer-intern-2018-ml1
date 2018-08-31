@@ -6,7 +6,6 @@ ul {
 }
 
 div.main {
-    border: solid #00ff00;
     width: 1200px;
     margin: auto;
 }
@@ -14,13 +13,12 @@ div.main {
 /* user.html */
 
 div.post {
-    border: solid #000000;
     padding: 10px;
     margin: auto;
 }
 
 img.post_pic {
-    width: auto; height: 120px;
+    width: auto; height: 180px;
     float: left;
     margin: 10px 10px;
 }
