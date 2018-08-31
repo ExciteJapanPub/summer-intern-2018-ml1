@@ -8,7 +8,7 @@
     　　<p>user id: <a href="{{ users_path[n] }}">{{ friend_list[n] }}</a>
         similarity: {{ friend_similarity[n] }}
      </p>
-　　　　　　　{% endfor %}
+　　　{% endfor %}
   {% else %}
     こんにちは {{ user_name }} さん
     何人のBFFが必要ですか？（100人以下で入力してください）
