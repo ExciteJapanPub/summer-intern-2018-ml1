@@ -141,7 +141,8 @@ def search_user_by_userid(users, user_id):
 
     return None
 
-def serch_picture_by_pictureid(pictures, user_id):
+def serch_picture_by_userid(user_id):
+
     result = []
 
     for picture in pictures:
@@ -149,7 +150,6 @@ def serch_picture_by_pictureid(pictures, user_id):
             result.append(picture)
 
     return result
-
 
 
 def update_feature(users, user_id, label):
@@ -179,7 +179,9 @@ def calc_BFF_similarity(users):
 
     return similarity
 
+
 USERS = generator()
+
 
 def show_BFF_rank(usr_id, users=USERS):
    arr = calc_BFF_rank(usr_id, users)
