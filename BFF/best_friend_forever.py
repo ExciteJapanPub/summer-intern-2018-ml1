@@ -42,35 +42,6 @@ class Picture:
 
 # FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
 
-def generator():
-    user_lst = []
-    for i in range(10):
-    # writer = csv.writer(f)
-        user = User(i)
-        user_lst.append(user)
-
-        path_list = []
-
-    with train.TEST_IMAGES_PATH.open() as f:
-        lines = f.readlines()
-        for j in range(10):
-            # k = np.random.randint(25250)
-            k = 0
-            line = lines[k]
-            dish_name, filename = line.rstrip().split('/')
-            path = "./static/dataset/images/" + dish_name + '/' + filename + '.jpg'
-
-            picture = input_pic(path, i)
-            label = predict(picture)
-            print(label)
-            update_feature(user_lst, i, label)
-
-    # user.feature_food = np.random.randint(10, size=(1, N))
-    # user.feature_country = np.random.randint(10, size=(1, COUNTRY_NUM))
-    # user.feature_ing = np.random.randint(10, size=(1, ING_NUM))
-    # user.feature_calorie = np.random.randint(10, size=(1, CALORIE_NUM))
-    return user_lst
-
 
 def normalize(v):
     n = 0
