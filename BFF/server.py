@@ -27,6 +27,10 @@ dic_tag_calorie = ['高カロリー', '中カロリー', '低カロリー']
 # 自身の名称を app という名前でインスタンス化する
 app = Flask(__name__)
 
+print('a')
+USERS = generator()
+print('b')
+
 # ここからウェブアプリケーション用のルーティングを記述
 # root
 @app.route('/')
@@ -42,7 +46,7 @@ def ranking():
     # friend_list = [2, 4, 6, 5, 7, 8, 10, 22, 88]
     # friend_similarity = [0.95, 0.94, 0.93, 0.90, 0.88, 0.74, 0.55, 0.43, 0.21]
     user_name = 0
-    friend_list, friend_similarity = show_BFF_rank(user_name)
+    friend_list, friend_similarity = show_BFF_rank(user_name, USERS)
 
     if request.method == 'GET':
         return render_template('ranking.html', title=title, user_name=user_name)
@@ -109,6 +113,6 @@ def user(user_id):
 
 
 if __name__ == '__main__':
-    generator()
+
     app.debug = True # デバッグモード有効化
     app.run(host='127.0.0.1') # どこからでもアクセス可能に

@@ -42,40 +42,11 @@ class Picture:
 
 # FOOD_DICT = {0:'udon', 1:'omurice', 2:'curry rice', 3:'fried rice', 4:'humberg'}
 
-def normalize(v, axis=-1, order=2):
-    l2 = np.linalg.norm(v, axis=axis, ord = order, keepdims=True)
-    l2[l2==0] = 1
-    return v/l2
-
-
-def generator():
-    user_lst = []
-    for i in range(10):
-    # writer = csv.writer(f)
-        user = User(i)
-        user_lst.append(user)
-
-        path_list = []
-
-    with train.TEST_IMAGES_PATH.open() as f:
-        lines = f.readlines()
-        for j in range(10):
-            # k = np.random.randint(25250)
-            k = 0
-            line = lines[k]
-            dish_name, filename = line.rstrip().split('/')
-            path = "./dataset/images/" + dish_name + '/' + filename + '.jpg'
-
-            picture = input_pic(path, i)
-            label = predict(picture)
-            print(label)
-            update_feature(user_lst, i, label)
-
-    # user.feature_food = np.random.randint(10, size=(1, N))
-    # user.feature_country = np.random.randint(10, size=(1, COUNTRY_NUM))
-    # user.feature_ing = np.random.randint(10, size=(1, ING_NUM))
-    # user.feature_calorie = np.random.randint(10, size=(1, CALORIE_NUM))
-    return user_lst
+def normalize(v):
+    n = 0
+    for i in v:
+        n += i * i
+    return v/np.sqrt(n)
 
 
 def input_pic(path, user_id):
@@ -126,7 +97,7 @@ def predict(picture):
         # 結果
         label = predicted_label[0]
         probas = [f'{p:5.3f}' for p in probas[0]]
-        print(f'prediction={label} probas={probas} image={picture.file_path}')
+        # print(f'prediction={label} probas={probas} image={picture.file_path}')
 
         picture.food_num = label
         picture.feature_vector = load_category(label)
@@ -166,8 +137,44 @@ def update_feature(users, user_id, label):
     user.feature_country = user.feature_country + country_vector
     user.feature_ing = user.feature_ing + ing_vector
     user.feature_calorie = user.feature_calorie + carolie_vector
-    print(user.feature_calorie)
-# ---------
+    # print(user.feature_calorie)
+
+
+def generator():
+    print('start generate users data')
+    user_lst = []
+    for i in range(10):
+
+        user = User(i)
+        user_lst.append(user)
+
+        with train.TEST_IMAGES_PATH.open() as f:
+            lines = f.readlines()
+            for j in range(2):
+                k = np.random.randint(25250)
+                line = lines[k]
+                dish_name, filename = line.rstrip().split('/')
+                path = "./dataset/images/" + dish_name + '/' + filename + '.jpg'
+
+                picture = input_pic(path, i)
+                label = predict(picture)
+                # print(label)
+                update_feature(user_lst, i, label)
+
+    # user.feature_food = np.random.randint(10, size=(1, N))
+    # user.feature_country = np.random.randint(10, size=(1, COUNTRY_NUM))
+    # user.feature_ing = np.random.randint(10, size=(1, ING_NUM))
+    # user.feature_calorie = np.random.randint(10, size=(1, CALORIE_NUM))
+
+    print(user_lst[1].user_id)
+    print(user_lst[1].feature_food)
+    print(user_lst[1].feature_country)
+    print(user_lst[1].feature_ing)
+    print(user_lst[1].feature_calorie)
+    return user_lst
+
+
+# USERS = generator()
 
 
 def calc_BFF_similarity(users):
@@ -178,10 +185,10 @@ def calc_BFF_similarity(users):
     return similarity
 
 
-USERS = generator()
+# USERS = generator()
 
 
-def show_BFF_rank(usr_id, users=USERS):
+def show_BFF_rank(usr_id, users):
    arr = calc_BFF_rank(usr_id, users)
    friend_list = np.argsort(arr)[::-1]
    print(friend_list[:5])
@@ -206,7 +213,7 @@ def load_users():
     return user_df.values
 
 
-def calc_BFF_rank(usr_id, users=USERS):
+def calc_BFF_rank(usr_id, users):
 
 
    user = search_user_by_userid(users, usr_id)
@@ -246,13 +253,14 @@ if __name__ == '__main__':
     args = parser.parse_args()
     user_id = args.your_id
 
+    # generator()
+
     '''
     print('path->')
     path = input()
     user_id = input()
     '''
 
-    users = generator()
     #
     # path = args.pathimage
     #
